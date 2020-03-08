@@ -1,10 +1,21 @@
 baseurl = "/"
-languageCode = "en-us"
 title = "Francisco Bischoff"
-theme = "hugo-lithium"
+author = "Francisco Bischoff"
+copyright = "Copyright (c) 2020 Francisco Bischoff"
+canonifyurls = true
+paginate = 3
+theme="franzbischoff"
+languageCode = "en-us"
 googleAnalytics = ""
-disqusShortname = ""
+#disqusShortname = ""
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+
+relativeurls = false
+DisqusShortname = "researchtips"
+pluralizeListTitles = false
+buildFuture = true
+[markup.goldmark.renderer]
+unsafe= true
 
 [permalinks]
     post = "/:year/:month/:day/:slug/"
@@ -33,34 +44,86 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     url = "/about/"
     weight = 4
 
+
 [params]
-    author = "Francisco Bischoff"
-    description = "Christo nihil præponere."
 
-    # Date format (refer to Go's date format: http://flippinggodateformat.com)
-    dateFormat = "2006/12/31"
+# Number of seminars to show on main page.
+seminars_count = 5
 
-    # Number of posts to show on main page.
-    posts_count = 3
+# Date format (refer to Go's date format: http://flippinggodateformat.com)
+# Examples: "Mon, Jan 2, 2006" or "2006-01-02"
+date_format = "2 January 2006"
 
-    # Number of publications to show on main page.
-    pubs_count = 5
+# Publications can have a Params.publication for citation references.
+# Publications can have a Params.kind, such as "book".
+# Both parameters are mapped to an icon in partials/pub-icon.html.
 
-    # options for highlight.js (version, additional languages, and theme)
-    highlightjsVersion = "9.12.0"
-    highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
-    #highlightjsCDN = "//cdn.bootcss.com"
-    highlightjsLang = ["r", "yaml", "tex"]
-    highlightjsTheme = "github"
+bio_full = "Pierre de Fermat: Lawyer at the Parlement of Toulouse, mathematician in his spare time!"
+bio_twitter = "pierrede_fermat"
 
-    MathJaxCDN = "//cdnjs.cloudflare.com/ajax/libs"
-    MathJaxVersion = "2.7.5"
+# Title of posts section on main page.
+#posts_title = "Posts"
 
-    # path to the favicon, under "static"
-    favicon = "favicon.ico"
+# Number of posts to show on main page.
+posts_count = 3
 
-    [params.logo]
-    url = "logo.png"
-    width = 50
-    height = 50
-    alt = "Logo"
+# Title of publications section on main page.
+#pubs_title = "Publications"
+
+# Number of publications to show on main page.
+pubs_count = 5
+
+author = "Francisco Bischoff"
+description = "Christo nihil præponere."
+
+# options for highlight.js (version, additional languages, and theme)
+highlightjsVersion = "9.12.0"
+highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
+#highlightjsCDN = "//cdn.bootcss.com"
+highlightjsLang = ["r", "yaml", "tex"]
+highlightjsTheme = "github"
+
+MathJaxCDN = "//cdnjs.cloudflare.com/ajax/libs"
+MathJaxVersion = "2.7.5"
+
+# path to the favicon, under "static"
+favicon = "favicon.ico"
+
+[params.logo]
+url = "logo.png"
+width = 50
+height = 50
+alt = "Logo"
+
+
+
+[[params.education]]
+  course = "Bachelor in Civil Law"
+  institution = "University of Orléans"
+  year = 1626
+
+[[params.social]]
+  icon = "envelope"
+  icon_pack = "fa"
+  link = "mailto:fermat@example.com"
+  text = "fermat@example.com"
+
+[[params.social]]
+  icon = "twitter"
+  icon_pack = "fa"
+  link = "https://twitter.com/pierrede_fermat"
+  text = "@pierrede_fermat"
+  site = "Twitter"
+
+[[params.social]]
+  icon = "github"
+  icon_pack = "fa"
+  link = "//https://gist.github.com/Ayrx/5884802"
+  text = "Fermat"
+  site = "GitHub"
+
+[[params.social]]
+  icon = "researchgate"
+  icon_pack = "ai"
+  link = "https://www.researchgate.net/profile/Pierre_Fermat3"
+  text = "ResearchGate"
