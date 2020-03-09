@@ -9,7 +9,6 @@ languageCode = "en-us"
 googleAnalytics = ""
 #disqusShortname = ""
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
-
 relativeurls = false
 DisqusShortname = "researchtips"
 pluralizeListTitles = false
@@ -47,6 +46,7 @@ unsafe= true
 
 [params]
 
+domain = "franzbischoff.netlify.com"
 # Number of seminars to show on main page.
 seminars_count = 5
 
@@ -98,32 +98,25 @@ alt = "Logo"
 
 
 [[params.education]]
-  course = "Bachelor in Civil Law"
-  institution = "University of Orléans"
-  year = 1626
+  course = "MSc in Medical Informatics"
+  institution = "Porto University, Portugal"
+  year = 2017
 
 [[params.social]]
   icon = "envelope"
   icon_pack = "fa"
-  link = "mailto:fermat@example.com"
-  text = "fermat@example.com"
+  link = "mailto:fbischoff@med.up.pt"
+  text = "fbischoff@med.up.pt"
 
 [[params.social]]
   icon = "twitter"
   icon_pack = "fa"
-  link = "https://twitter.com/pierrede_fermat"
-  text = "@pierrede_fermat"
+  link = "https://twitter.com/franzbischoff"
+  text = "@franzbischoff"
   site = "Twitter"
-
-[[params.social]]
-  icon = "github"
-  icon_pack = "fa"
-  link = "//https://gist.github.com/Ayrx/5884802"
-  text = "Fermat"
-  site = "GitHub"
 
 [[params.social]]
   icon = "researchgate"
   icon_pack = "ai"
-  link = "https://www.researchgate.net/profile/Pierre_Fermat3"
+  link = "https://www.researchgate.net/profile/franzbischoff"
   text = "ResearchGate"
