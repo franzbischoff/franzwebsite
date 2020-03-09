@@ -319,6 +319,15 @@ header h1 {	font-size: 24px;
 	margin-left: 2em;
 }
 
+.description {
+  text-align:right;
+  font-family: 'Fira Sans', 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color:#b3e0ca;
+  position: absolute;
+  right: 3px;
+  font-size:0.6em;
+}
+
 
 /* CODE */
 
