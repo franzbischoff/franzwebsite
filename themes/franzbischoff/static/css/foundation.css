@@ -1266,7 +1266,7 @@ a {
   line-height: inherit;
   cursor: pointer; }
   a:hover, a:focus {
-    color: #1585cf; }
+    color: #15cf72; }
   a img {
     border: 0; }
 
@@ -1485,7 +1485,7 @@ kbd {
     margin-left: 0;
     margin-right: 0; }
   .button.primary {
-    background-color: #536878;
+    background-color: #537865;
     color: #fefefe; }
     .button.primary:hover, .button.primary:focus {
       background-color: #147cc0;

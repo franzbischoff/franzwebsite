@@ -1,4 +1,4 @@
-/* color:#101730; color:#03396c; */
+/* color:#101730; color:#036c38; */
 
 /* Prevent flashing of responsive sandwich button on page load.  */
 .no-js .top-bar { display: none; }
@@ -33,7 +33,7 @@ body {
 .nav-bar button,
 .nav-bar a,
 .nav-bar ul {
-    background-color: #536878;
+    background-color: #537865;
     color: #ffffff;
     border: none;
 }
@@ -45,14 +45,14 @@ body {
 .site-title {
     padding: 0.7rem 0.8rem;
     line-height: 1;
-    color: #b3cde0;
+    color: #b3e0ca;
 }
 
 
 /* Last footer.  */
-.endofpage { 
+.endofpage {
     /* background-image: url("/img/wave.png"); */
-    background-color: #536878;
+    background-color: #537865;
     height: 50px;
     background-repeat: repeat-x;
     margin-top: 3ex;
@@ -141,7 +141,7 @@ pre {
 /* Default footer.  */
 .whatisthis hr {
     border-style: solid;
-    border-color: #536878;
+    border-color: #537865;
 }
 
 /* Taxonomy terms page.  */
@@ -189,13 +189,13 @@ ul.taxonomy-terms {
 /* Publication links on front page and on publication pages. */
 
 .button.primary {
-    background-color: #536878;
-    color: #fefefe; 
+    background-color: #537865;
+    color: #fefefe;
 }
 
 .button.hollow.pub-link {
     font-family: 'Carlito', sans;
-    color: #536878;
+    color: #537865;
     border: 1px dotted #101730;
     transition: none;
     padding: 0.35em 0.4em;
@@ -211,7 +211,7 @@ ul.taxonomy-terms {
 .button.hollow.primary {
     font-family: 'Carlito', sans;
     border: 1px solid #101730;
-    color: #536878;
+    color: #537865;
     transition: none;
 }
 
@@ -299,16 +299,16 @@ ul.taxonomy-terms {
 
 .share-box ul.share li a {
     display: block;
-    border: 1px solid #536878;
+    border: 1px solid #537865;
     border-radius: 10%;
-    background-color: #536878;
+    background-color: #537865;
     text-decoration: none !important;
     margin: 0;
 }
 
 .share-box ul.share li:hover .fa {
     transform: scale(1.4);
-    color: #1585cf;
+    color: #15cf72;
 }
 
 
@@ -317,7 +317,7 @@ ul.taxonomy-terms {
  **************************************************/
 
 .post-metadata {
-    color: #536878;
+    color: #537865;
     margin-bottom: 1rem;
     margin-top: -1em;
     font-size: small;
@@ -330,7 +330,7 @@ ul.taxonomy-terms {
 }
 
 .post-metadata a {
-    color: #536878;
+    color: #537865;
     border: none;
 }
 

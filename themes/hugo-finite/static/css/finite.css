@@ -1,4 +1,4 @@
-/* color:#101730; color:#03396c; */
+/* color:#101730; color:#036c38; */
 
 /* Prevent flashing of responsive sandwich button on page load.  */
 .no-js .top-bar { display: none; }
@@ -52,7 +52,7 @@ body {
 
 
 /* Last footer.  */
-.endofpage { 
+.endofpage {
     /* background-image: url("/img/wave.png"); */
     background-color: #101730;
     height: 50px;
@@ -76,7 +76,7 @@ a
 a:hover,
 a:focus {
     color: #2199e8;
-    border-color: #2199e8; 
+    border-color: #2199e8;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -213,7 +213,7 @@ ul.taxonomy-terms {
 
 .button.hollow.primary {
     font-family: 'WorkSans', sans;
-    text-transform: uppercase;  
+    text-transform: uppercase;
     border: 1px solid #101730;
     color: #101730;
     transition: none;
@@ -316,7 +316,7 @@ ul.taxonomy-terms {
 
 .share-box ul.share li:hover .fa {
     transform: scale(1.4);
-    color: #1585cf;
+    color: #15cf72;
 }
 
 

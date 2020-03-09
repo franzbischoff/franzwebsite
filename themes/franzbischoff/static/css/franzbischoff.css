@@ -16,9 +16,10 @@ form, input[type="search"], select[multiple="multiple"]  {
 
 h1, h2, h3, h4, h5 {
 	font-family: 'Fira Sans', 'Trebuchet MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	color: #36454f;
+	color: #364f43;
   font-weight: bold;
 }
+
 h1 {
   font-size: 1.5em;
   padding-bottom: 1em;
@@ -27,7 +28,7 @@ h1 {
 
 h2 {
   font-size: 1.3em;
-  border-bottom: 1px solid #b3cde0;
+  border-bottom: 1px solid #b3e0ca;
 }
 
 h2 a {border-bottom: none;}
@@ -49,10 +50,10 @@ p, ul, ol, dl, blockquote, hr, pre, table, form, fieldset, figure, address {
 }
 
 .label-red {
-  background-color: #36454f;
+  background-color: #364f43;
 }
 
-a {color: #36454f;
+a {color: #364f43;
    text-decoration:none;
    border-bottom: dotted 1px #A1A3A1;}
 
@@ -78,7 +79,7 @@ hr {
   max-width: 100%;
 }
 blockquote {
-  color: #36454f;
+  color: #364f43;
   background: #e9e9e9;
   border-left: 10px solid #ccc;
   margin: 1.5em 10px;
@@ -89,7 +90,7 @@ blockquote {
 }
 
 blockquote p {
-  color: #36454f;
+  color: #364f43;
   display: inline;
 }
 
@@ -175,9 +176,9 @@ nav {
 
 .compact { margin: 0 0 0 1.3em; }
 
-hr {border-top: 1px solid #b3cde0; margin-top:5ex; margin-bottom: 5ex;}
+hr {border-top: 1px solid #b3e0ca; margin-top:5ex; margin-bottom: 5ex;}
 
-.separator {border-top: 5px solid #b3cde0;}
+.separator {border-top: 5px solid #b3e0ca;}
 
 
 /* =Layout
@@ -207,21 +208,21 @@ hr {border-top: 1px solid #b3cde0; margin-top:5ex; margin-bottom: 5ex;}
 }
 
 #topbar {
-	background: #536878;
+	background: #537865;
 	padding:0px;
 	margin:0ex;
-	/* border-bottom: 3px solid #36454f; */
+	/* border-bottom: 3px solid #364f43; */
 }
 #midbar {
 	background: #eaa;
 	padding:0px;
 	margin:0ex;
-	/* border-bottom: 3px solid #36454f; */
+	/* border-bottom: 3px solid #364f43; */
 }
 
 #topbar .navbar {padding-bottom:14px; font-size:120%;}
 #topbar li a {color: #fff; border-bottom: none;}
-#topbar li a {color: #b3cde0;}
+#topbar li a {color: #b3e0ca;}
 #topbar li span a {color: #fff;}
 
 .avatar {
@@ -289,16 +290,16 @@ header h1 {	font-size: 24px;
 /* =Footer
 -----------------------------------------------------------------------------*/
 #footer {
-	color: #b3cde0;
+	color: #b3e0ca;
 	margin-top: 3ex;
 	padding-bottom: 20px;
 	font-size: .9em;
 	padding-top: 1em;
-	background-color: #536878;
+	background-color: #537865;
 	overflow: hidden;
 /*	box-shadow: 0 2px 4px #bbb inset;*/
 /*	background: #f0f0f0;*/
-	border-top: 3px solid #36454f;
+	border-top: 3px solid #364f43;
 }
 #footer a { color: #fff; }
 #footer section {
