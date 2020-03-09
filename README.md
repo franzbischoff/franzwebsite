@@ -1,7 +1,7 @@
 Source files for franzbischoff website
 ======================================
 
-All content and theme files for https://franzbischoff.netlify.com, using [Blogdown](https://github.com/rstudio/blogdown) and [Hugo](http://gohugo.io/) to generate the site. 
+All content and theme files for https://franzbischoff.rbind.io, using [Blogdown](https://github.com/rstudio/blogdown) and [Hugo](http://gohugo.io/) to generate the site. 
 
 ### Licenses of third-party components
 

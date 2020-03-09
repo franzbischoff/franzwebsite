@@ -1,4 +1,4 @@
-# Hugo Theme for franzbischoff.netlify.com
+# Hugo Theme for franzbischoff.rbind.io
 
 The design is derived from robjhyndman.com that was inspired by kieranhealy.org and is a modification of hugo-finite. 
 

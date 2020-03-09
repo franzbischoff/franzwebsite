@@ -46,7 +46,7 @@ unsafe= true
 
 [params]
 
-domain = "franzbischoff.netlify.com"
+domain = "franzbischoff.rbind.io"
 # Number of seminars to show on main page.
 seminars_count = 5
 
