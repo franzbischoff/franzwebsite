@@ -52,7 +52,7 @@ This method has the following advantages/features:
 
 ### Performance on an Intel(R) Core(TM) i7-7700 CPU @ 3.60GHz using a random walk dataset
 
-```{r data eval=FALSE, include=TRUE}
+```{r data, eval=FALSE, include=TRUE}
 set.seed(2018)
 data <- cumsum(sample(c(-1, 1), 40000, TRUE))
 ```

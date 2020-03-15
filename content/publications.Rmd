@@ -1,6 +1,0 @@
----
-title: "Publications"
----
-
-Just a test2
-

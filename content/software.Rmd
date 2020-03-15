@@ -1,11 +1,7 @@
 ---
 title: "Software"
 categories:
-- graphics
-- LaTeX
 - R
-- seminars
 ---
 
-Just a test2
-
+Soon

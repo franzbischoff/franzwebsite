@@ -10,7 +10,6 @@ googleAnalytics = "UA-160033971-1"
 disqusShortname = "franzbischoff"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 relativeurls = false
-DisqusShortname = "researchtips"
 pluralizeListTitles = false
 buildFuture = true
 [markup.goldmark.renderer]
@@ -21,7 +20,6 @@ unsafe= true
 
 [social]
     github  = "https://github.com/franzbischoff"
-    twitter = "https://twitter.com/franzbischoff"
 
 [[menu.main]]
     name = "Posts"
@@ -89,12 +87,6 @@ MathJaxVersion = "2.7.5"
 # path to the favicon, under "static"
 favicon = "favicon.ico"
 
-[params.logo]
-url = "logo.png"
-width = 50
-height = 50
-alt = "Logo"
-
 [[params.social]]
   icon = "university"
   icon_pack = "fa"
@@ -106,13 +98,6 @@ alt = "Logo"
   icon_pack = "fa"
   link = "mailto:fbischoff@med.up.pt"
   text = "fbischoff@med.up.pt"
-
-[[params.social]]
-  icon = "twitter"
-  icon_pack = "fa"
-  link = "https://twitter.com/franzbischoff"
-  text = "@franzbischoff"
-  site = "Twitter"
 
 [[params.social]]
   icon = "github-alt"
