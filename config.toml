@@ -111,3 +111,9 @@ favicon = "favicon.ico"
   icon_pack = "ai"
   link = "https://www.researchgate.net/profile/franzbischoff"
   text = "ResearchGate"
+
+[[params.blogroll]]
+  icon = "tags"
+  icon_pack = "fa"
+  link = "https://www.r-bloggers.com/"
+  text = "R-Bloggers"

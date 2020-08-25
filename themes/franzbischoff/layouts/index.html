@@ -18,6 +18,13 @@
       <li style="margin-bottom: 9px;">{{ partial "pub-summary" . }}</li>
       {{ end }}
     </ul>
+    <div style="padding-top: 5ex;"></div>
+    <h2>Blogroll</h2>
+      <ul class="fa-ul">
+	{{ range $.Site.Params.blogroll }}
+	<li><i class="fa-li {{ .icon_pack }} {{ .icon_pack}}-{{ .icon }}" style="color:#036c38;font-size:80%;padding-top:6px;"></i><a href="{{ .link }}">{{ .text }}</a>{{ if .site}} on {{ .site }}{{ end }}</li>
+	{{ end }}
+      </ul>
   </div>
 </div>
 
