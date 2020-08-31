@@ -9,10 +9,10 @@
     {{ range first 10 .Data.Pages }}
     <item>
       <title>{{ .Title }}</title>
-      <link>{{.Site.Params.domain}}{{ .Permalink }}</link>
+      <link>{{ .Permalink }}</link>
       <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 MST" }}</pubDate>
       <author>Francisco Bischoff</author>
-      <guid>{{.Site.Params.domain}}{{ .Permalink }}</guid>
+      <guid>{{ .Permalink }}</guid>
       <description>{{ .Content | html }}</description>
     </item>
     {{ end }}
