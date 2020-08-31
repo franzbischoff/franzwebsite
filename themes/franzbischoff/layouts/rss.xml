@@ -1,7 +1,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
       <title>{{ .Title }} on {{.Site.Params.domain}}</title>
-    <link>{{ .Permalink }}</link>
+    <link>{{.Site.Params.domain}}{{ .Permalink }}</link>
     <language>en-us</language>
     <author>Francisco Bischoff</author>
     <rights>Copyright (c) Francisco Bischoff.</rights>
