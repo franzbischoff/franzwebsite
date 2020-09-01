@@ -89,7 +89,7 @@ lines(5001:5100, query, col = 2)
 Yes! There is a match! But there are more similar patterns? Here I just find that a new helper function could exist. As it doesn't, let's write a few lines (read the comments!):
 
 ```{r fig.height=4}
-# This function will try to find what we call neighbours, that are patterns that are
+# This snippet will try to find what we call neighbours, that are patterns that are
 # similar to your query, but not the best match.
 # We know that "Trivial Matches" happens close to the best match, but in this case
 # we are not looking for motifs, but for neighbours. This will make sense in the future.
@@ -100,7 +100,7 @@ tictac2 <- Sys.time() - tictac2
 
 cat(paste("sort() finished in ", tictac2, "seconds\n\n"))
 
-# the first one we know already is our best match. Let's not plot the results of three more "matches".
+# the first one we know already is our best match. Let's now plot the results of three more "matches".
 
 # Remember that our `window_size` is 100:
 w <- 100
