@@ -1,0 +1,118 @@
+---
+title: 100 Time Series Data Mining Questions - Part 2
+author: Francisco Bischoff
+date: '2020-09-08'
+publishDate: '2020-09-08'
+categories:
+  - datamining
+  - R
+  - r-bloggers
+  - timeseries
+  - tsmp
+slug: 100-time-series-part-2
+mathjax: yes
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>In the <a href="/posts/100-time-series-part-1">last post</a> we started looking for a known pattern in a time series.</p>
+<p>For the next question, we will still be using the datasets available at <a href="https://github.com/matrix-profile-foundation/mpf-datasets" class="uri">https://github.com/matrix-profile-foundation/mpf-datasets</a> so you can try this at home.</p>
+<p>The original code (MATLAB) and data are <a href="https://www.cs.ucr.edu/~eamonn/HundredQuestions.zip">here</a>.</p>
+<p>Now let’s start:</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Are there any repeated patterns in my data?</li>
+</ol>
+<p>Now we don’t know what we are looking for, but we want to discover something. Not just one pattern, but patterns that repeat, and may look similar or not.</p>
+<p>First, let’s load the <code>tsmp</code> library and import our dataset:</p>
+<pre class="r"><code># install.packages(&#39;tsmp&#39;)
+
+library(tsmp)
+
+baseurl &lt;- &quot;https://raw.githubusercontent.com/matrix-profile-foundation/mpf-datasets/a3a3c08a490dd0df29e64cb45dbb355855f4bcb2/&quot;
+dataset &lt;- unlist(read.csv(paste0(baseurl, &quot;synthetic/motifs-discords-small.txt&quot;), header = FALSE), 
+    use.names = FALSE)</code></pre>
+<p>And plot it as before:</p>
+<pre class="r"><code>plot(dataset, main = &quot;Dataset&quot;, type = &quot;l&quot;, ylab = &quot;&quot;, xlab = &quot;time&quot;)</code></pre>
+<p><img src="/posts/2020-09-08-100-time-series-part-2_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>This dataset is a synthetic dataset for demonstration. We clearly see three different patterns. Can we find those patterns?</p>
+<p>Again the <code>tsmp</code> does all for you. First I’ll demonstrate how to work with that step by step, and after, using the <a href="https://matrixprofile.org/">MPA</a> (Matrix Profile API), introduced by the <a href="https://matrixprofile.org/">MPA</a> (Matrix Profile Foundation) has standard functions to use in <code>R</code> and other languages.</p>
+<p>In this example, we will not use the Rcpp optimized version of the algorithm, as it is not fully implemented in the package at this moment.</p>
+<pre class="r"><code># First, we build our Matrix Profile using the `mpx()` function that is already implemented
+# in Rcpp (optimized). We can use other algorithms like STAMP, STOMP, but this is beyond
+# the scope of this post.
+tictac1 &lt;- Sys.time()
+mp_obj &lt;- tsmp(dataset, window_size = 20, exclusion_zone = 1, verbose = 0)
+tictac1 &lt;- Sys.time() - tictac1
+
+cat(paste(&quot;tsmp() finished in &quot;, tictac1, &quot;seconds\n\n&quot;))</code></pre>
+<pre><code>## tsmp() finished in  0.106970071792603 seconds</code></pre>
+<pre class="r"><code>str(mp_obj, 1)</code></pre>
+<pre><code>## List of 9
+##  $ mp  : num [1:856, 1] 0.198 0.202 0.203 0.214 0.207 ...
+##  $ pi  : num [1:856, 1] 121 122 248 249 250 66 67 48 354 355 ...
+##  $ rmp : num [1:856, 1] 0.198 0.202 0.203 0.214 0.207 ...
+##  $ rpi : num [1:856, 1] 121 122 248 249 250 66 67 48 354 355 ...
+##  $ lmp : num [1:856, 1] Inf Inf Inf Inf Inf ...
+##  $ lpi : num [1:856, 1] -Inf -Inf -Inf -Inf -Inf ...
+##  $ w   : num 20
+##  $ ez  : num 1
+##  $ data:List of 1
+##  - attr(*, &quot;class&quot;)= chr &quot;MatrixProfile&quot;
+##  - attr(*, &quot;join&quot;)= logi FALSE
+##  - attr(*, &quot;origin&quot;)=List of 8</code></pre>
+<p>Differently of the <a href="/posts/100-time-series-part-1">last post</a>, we don’t have a <code>distance profile</code> but a <code>matrix profile</code> that is the minimum value of all distance profiles of all possible rolling window in this data. Together, we have the <code>profile index</code> that points to the most similar pattern in this data.</p>
+<p>Let’s take a look on the <code>matrix profile</code> object:</p>
+<pre class="r"><code>mp_obj$rmp &lt;- NULL  # we don&#39;t need that in this tutorial
+mp_obj$lmp &lt;- NULL  # we don&#39;t need that in this tutorial
+plot(mp_obj, data = TRUE)</code></pre>
+<p><img src="/posts/2020-09-08-100-time-series-part-2_files/figure-html/plot1-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Notice that the Matrix Profile gets lower values as pattern repeats, and higher values when a different pattern arises. Here is the magic!</p>
+<p>Continuing trying to find the patterns:</p>
+<pre class="r"><code># the `tsmp` package implements the pipe feature from `magrittr` package:
+# https://magrittr.tidyverse.org/
+tictac2 &lt;- Sys.time()
+mp_obj %&gt;% find_motif(n_motifs = 3) %T&gt;% plot()</code></pre>
+<p><img src="/posts/2020-09-08-100-time-series-part-2_files/figure-html/motif1-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>## Matrix Profile
+## --------------
+## Profile size = 856 
+## Window size = 20 
+## Exclusion zone = 20 
+## Contains 1 set of data with 875 observations and 1 dimension 
+## 
+## Motif
+## -----
+## Motif pairs found = 3 
+## Motif pairs indexes = [178, 323] [777, 848] [512, 637]  
+## Motif pairs neighbors = [363, 283, 58, 383, 98, 38, 18, 118, 403, 243] [805] []</code></pre>
+<pre class="r"><code>tictac2 &lt;- Sys.time() - tictac2
+
+cat(paste(&quot;find_motif() finished in &quot;, tictac2, &quot;seconds (with plot!)\n\n&quot;))</code></pre>
+<pre><code>## find_motif() finished in  0.038020133972168 seconds (with plot!)</code></pre>
+<p>Here we see a curious result. I managed to get the three parts, but I confess I did a tweak. As we see, that sinusoidal wave that is in the 3rd motif (the green one) is very similar to the sinusoidal wave from the 1st motif. So why the neighbours (dashed lines) of Motif 1 don’t find that pattern? That’s because of the <code>window_size</code> and <code>exclusion_zone</code> that an eager reader may have seen I set to <code>1</code> in tsmp() function, and, I used specifically the window of <code>20</code>, that fits what I wanted.</p>
+<p>I did that on purpose, to seize the opportunity to draw attention to these two parameters. This new concept (Matrix Profile) is almost parameter-free, but these two parameters still essential to know about (later we will see a special feature that can help us to suggest a proper window size).</p>
+<p>Anyway, we can see that Motif 3 is a mix of noise and sinusoidal, and that happens two times, so, in essence, this may be considered a motif.</p>
+<p>As promised, I’ll use the MPA for a lazy approach:</p>
+<pre class="r"><code># You&#39;ll see that this approach is way faster, but this is due to programming optimization
+# that will be available in later versions.
+tictac3 &lt;- Sys.time()
+compute(dataset, 64) %&gt;% motifs() %&gt;% visualize()</code></pre>
+<p><img src="/posts/2020-09-08-100-time-series-part-2_files/figure-html/mpa-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>tictac3 &lt;- Sys.time() - tictac3
+
+cat(paste(&quot;compute(), motifs(), visualize() finished in &quot;, tictac3, &quot;seconds (with plot!)\n\n&quot;))</code></pre>
+<pre><code>## compute(), motifs(), visualize() finished in  0.0620040893554688 seconds (with plot!)</code></pre>
+<p>And here is the laziest (<strong>spoiler alert!</strong> it will plot discords! we’ll talk about them in another post).</p>
+<pre class="r"><code># You&#39;ll see that this approach is way faster, but this is due to programming optimization
+# that will be available in later versions.
+tictac4 &lt;- Sys.time()
+analyze(dataset, 64)</code></pre>
+<p><img src="/posts/2020-09-08-100-time-series-part-2_files/figure-html/lazy-1.png" width="960" style="display: block; margin: auto;" /><img src="/posts/2020-09-08-100-time-series-part-2_files/figure-html/lazy-2.png" width="960" style="display: block; margin: auto;" /><img src="/posts/2020-09-08-100-time-series-part-2_files/figure-html/lazy-3.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>tictac4 &lt;- Sys.time() - tictac4
+
+cat(paste(&quot;analyze() finished in &quot;, tictac3, &quot;seconds (with plot!)\n\n&quot;))</code></pre>
+<pre><code>## analyze() finished in  0.0620040893554688 seconds (with plot!)</code></pre>
+<p>So we did it again!</p>
+<p>This ends our second question of one hundred (let’s hope so!).</p>
+<p>Until next time.</p>
