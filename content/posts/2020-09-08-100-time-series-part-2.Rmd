@@ -11,7 +11,7 @@ categories:
   - tsmp
 slug: 100-time-series-part-2
 mathjax: yes
---- 
+---
 
 In the [last post](/posts/100-time-series-part-1) we started looking for a known pattern in a time series.
 
