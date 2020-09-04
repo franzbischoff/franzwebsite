@@ -1,15 +1,14 @@
 ---
 title: 100 Time Series Data Mining Questions (with answers!) - Part 1
-author: 'Francisco Bischoff'
+author: Francisco Bischoff
 date: '2020-09-01'
-slug: 100-time-series-part-1
 categories:
-  - R
   - datamining
+  - R
   - r-bloggers
   - timeseries
   - tsmp
-tags: []
+slug: 100-time-series-part-1
 mathjax: yes
 ---
 
@@ -17,7 +16,7 @@ I decided to start this series of Time Series Data Mining base on Eamonn's prese
 
 I'll use the datasets available at https://github.com/matrix-profile-foundation/mpf-datasets so you can try this at home.
 
-The original code (MATLAB) and data are [here](www.cs.ucr.edu/~eamonn/HundredQuestions.zip).
+The original code (MATLAB) and data are [here](https://www.cs.ucr.edu/~eamonn/HundredQuestions.zip)..
 
 So, let's start with number one:
 

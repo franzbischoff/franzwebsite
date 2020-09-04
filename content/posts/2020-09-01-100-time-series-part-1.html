@@ -1,15 +1,14 @@
 ---
 title: 100 Time Series Data Mining Questions (with answers!) - Part 1
-author: 'Francisco Bischoff'
+author: Francisco Bischoff
 date: '2020-09-01'
-slug: 100-time-series-part-1
 categories:
-  - R
   - datamining
+  - R
   - r-bloggers
   - timeseries
   - tsmp
-tags: []
+slug: 100-time-series-part-1
 mathjax: yes
 ---
 
@@ -18,7 +17,7 @@ mathjax: yes
 
 <p>I decided to start this series of Time Series Data Mining base on Eamonn’s presentation, so that’s why the title is “100”. That’s the idea, but for now, we only have 19 questions ready to go.</p>
 <p>I’ll use the datasets available at <a href="https://github.com/matrix-profile-foundation/mpf-datasets" class="uri">https://github.com/matrix-profile-foundation/mpf-datasets</a> so you can try this at home.</p>
-<p>The original code (MATLAB) and data are <a href="www.cs.ucr.edu/~eamonn/HundredQuestions.zip">here</a>.</p>
+<p>The original code (MATLAB) and data are <a href="https://www.cs.ucr.edu/~eamonn/HundredQuestions.zip">here</a>..</p>
 <p>So, let’s start with number one:</p>
 <ol style="list-style-type: decimal">
 <li>Have we ever seen a pattern that looks just like this?</li>
@@ -46,7 +45,7 @@ res &lt;- dist_profile(dataset, query)
 tictac1 &lt;- Sys.time() - tictac1
 
 cat(paste(&quot;dist_profile() finished in &quot;, tictac1, &quot;seconds\n\n&quot;))</code></pre>
-<pre><code>## dist_profile() finished in  0.00600004196166992 seconds</code></pre>
+<pre><code>## dist_profile() finished in  0.00800013542175293 seconds</code></pre>
 <pre class="r"><code>str(res)</code></pre>
 <pre><code>## List of 3
 ##  $ distance_profile: num [1:9902] 188 180 174 170 168 ...
@@ -81,7 +80,7 @@ st &lt;- sort(res$distance_profile, index.return = TRUE)  # this will order the 
 tictac2 &lt;- Sys.time() - tictac2
 
 cat(paste(&quot;sort() finished in &quot;, tictac2, &quot;seconds\n\n&quot;))</code></pre>
-<pre><code>## sort() finished in  0.00199985504150391 seconds</code></pre>
+<pre><code>## sort() finished in  0.00200104713439941 seconds</code></pre>
 <pre class="r"><code># the first one we know already is our best match. Let&#39;s now plot the results of three more
 # &#39;matches&#39;.
 
@@ -95,6 +94,6 @@ for (i in 1:5) {
     text(st$ix[i], -10, label = paste(&quot;match&quot;, i), adj = 0, col = i + 1, cex = 0.8)
 }</code></pre>
 <p><img src="/posts/2020-09-01-100-time-series-part-1_files/figure-html/unnamed-chunk-4-1.png" width="960" style="display: block; margin: auto;" /></p>
-<p>So we did it! We found the five best matches of our query, and it took only 0.0079999 seconds to do it!</p>
+<p>So we did it! We found the five best matches of our query, and it took only 0.0100012 seconds to do it!</p>
 <p>This ends our first question of one hundred (let’s hope so!).</p>
 <p>Until next time.</p>
