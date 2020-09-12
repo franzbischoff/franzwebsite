@@ -45,7 +45,7 @@ res &lt;- dist_profile(dataset, query)
 tictac1 &lt;- Sys.time() - tictac1
 
 cat(paste(&quot;dist_profile() finished in &quot;, tictac1, &quot;seconds\n\n&quot;))</code></pre>
-<pre><code>## dist_profile() finished in  0.00800013542175293 seconds</code></pre>
+<pre><code>## dist_profile() finished in  0.00699996948242188 seconds</code></pre>
 <pre class="r"><code>str(res)</code></pre>
 <pre><code>## List of 3
 ##  $ distance_profile: num [1:9902] 188 180 174 170 168 ...
@@ -80,7 +80,7 @@ st &lt;- sort(res$distance_profile, index.return = TRUE)  # this will order the 
 tictac2 &lt;- Sys.time() - tictac2
 
 cat(paste(&quot;sort() finished in &quot;, tictac2, &quot;seconds\n\n&quot;))</code></pre>
-<pre><code>## sort() finished in  0.00200104713439941 seconds</code></pre>
+<pre><code>## sort() finished in  0.00200009346008301 seconds</code></pre>
 <pre class="r"><code># the first one we know already is our best match. Let&#39;s now plot the results of three more
 # &#39;matches&#39;.
 
@@ -94,6 +94,7 @@ for (i in 1:5) {
     text(st$ix[i], -10, label = paste(&quot;match&quot;, i), adj = 0, col = i + 1, cex = 0.8)
 }</code></pre>
 <p><img src="/posts/2020-09-01-100-time-series-part-1_files/figure-html/unnamed-chunk-4-1.png" width="960" style="display: block; margin: auto;" /></p>
-<p>So we did it! We found the five best matches of our query, and it took only 0.0100012 seconds to do it!</p>
+<p>So we did it! We found the five best matches of our query, and it took only 0.0090001 seconds to do it!</p>
 <p>This ends our first question of one hundred (let’s hope so!).</p>
 <p>Until next time.</p>
+<p><a href="/posts/100-time-series-part-2">next post in this series</a></p>

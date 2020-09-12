@@ -50,7 +50,7 @@ plot(dataset, main = "Dataset", type = "l", ylab = "", xlab = "time")
 
 This dataset is a synthetic dataset for demonstration. We clearly see three different patterns. Can we find those patterns?
 
-Again the `tsmp` does all for you. First I'll demonstrate how to work with that step by step, and after, using the [MPA](https://matrixprofile.org/) (Matrix Profile API), introduced by the [MPA](https://matrixprofile.org/) (Matrix Profile Foundation) has standard functions to use in `R` and other languages.
+Again the `tsmp` does all for you. First I'll demonstrate how to work with that step by step, and after, using the [MPA](https://matrixprofile.org/) (Matrix Profile API), introduced by the [MPF](https://matrixprofile.org/) (Matrix Profile Foundation) has standard functions to use in `R` and other languages.
 
 In this example, we will not use the Rcpp optimized version of the algorithm, as it is not fully implemented in the package at this moment.
 
@@ -122,4 +122,6 @@ So we did it again!
 
 This ends our second question of one hundred (let's hope so!).
 
-Until next time.
+Until next time. 
+
+[previous post in this series](/posts/100-time-series-part-1) -- [next post in this series](/posts/100-time-series-part-3)
