@@ -1,0 +1,17 @@
+---
+title: 'tsmp: An R Package for Time Series with Matrix Profile'
+date: '2019-07-26'
+tags:
+  - article
+slug: tsmp-an-r-package-for-time-series-with-matrix-profile
+Status: Published
+comments: no
+kind: article
+link: http://arxiv.org/abs/1904.12626
+citation: '<b>Bischoff F</b>, Rodrigues PP. <b>tsmp: An R Package for Time Series with Matrix Profile</b>. April 2019.'
+doi: 10.13140/RG.2.2.13040.30726
+---
+
+This article describes tsmp, an R package that implements the matrix profile concept for time series. The tsmp package is a toolkit that allows all-pairs similarity joins, motif, discords and chains discovery, semantic segmentation, etc. Here we describe how the tsmp package may be used by showing some of the use-cases from the original articles and evaluate the algorithm speed in the R environment. This package can be downloaded at https://CRAN.R-project.org/package=tsmp.
+
+**Keywords:** R; data mining; matrix profile; time series; tsmp.

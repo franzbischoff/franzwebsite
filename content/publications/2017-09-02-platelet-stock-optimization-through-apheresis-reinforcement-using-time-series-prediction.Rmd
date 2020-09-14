@@ -1,0 +1,18 @@
+---
+title: '[Platelet Stock Optimization through apheresis reinforcement using time series
+  prediction]'
+date: '2017-09-02'
+slug: platelet-stock-optimization-through-apheresis-reinforcement-using-time-series-prediction
+categories: []
+tags: []
+Status: Published
+comments: no
+kind: article
+link: http://hdl.handle.net/10216/110223
+citation: '<b>Bischoff F.</b>, MSc Thesis <b>[Platelet Stock Optimization through apheresis reinforcement using time series prediction]</b>. 2017.'
+doi: 10.13140/RG.2.2.30450.56003
+---
+
+Blood is a valuable product that we cannot afford losing or not having. Blood donation inflow is very irregular, and the demand for blood products follows a stochastic pattern. Maintaining an optimal stock that meets requests efficiently is challenging, a fact aggravated by the reduced shelf life of these components. Efficient management of platelets stock is one of the most complex aspects of blood bank management. Blood platelets are perishable, and due to their reduced shelf life, the stock level has a very narrow window. The primary objective of this work is to assess the feasibility of the use of time series prediction in order to support the apheresis donor recruitment in periods of blood donor deficit when the production of pooled platelets is not enough to maintain the stock. Time series forecast models were trained with real data obtained from the database of Blood Bank Department of Centro Hospitalar de São João (University Hospital), in order to predict the number of donations and platelet transfusions for a horizon of 7 and 30 days and the trend for 120 days. Thereafter, timelines (of donations and transfusions) were randomly simulated, based on the characteristics of the real data (means, standard deviations, frequencies, seasonalities), on which the models with better performances in the real data were used to make predictions and to evaluate the results of increasing apheresis donations (intervention), with the results without this increasing apheresis donation (control) in the maintenance of the target stock levels. It was found that time series models can predict with some precision both the number of donations and the number of platelet transfusions, obtaining a performance superior to the use of means and medians alone. In conclusion increasing apheresis donations, based on the proposed algorithm, can reduce the number of times of insufficient production capacity of pooled platelets without increasing waste for the expiration date. However, it is necessary to take into account the costs inherent in increasing apheresis donations due to the number of false positives.
+
+**Keywords:** platelets; stock management; time series.

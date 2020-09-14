@@ -1,17 +1,15 @@
 ---
-author: John B Doe
-Status: Published
-comments: false
-date: 2001-01-01 01:01:01+00:00
-slug: paper-slug
-title: Paper Title
-kind: article
+title: MPA a novel cross-language API for time series analysis
+date: '2020-03-19'
 tags:
-- thistag
-# file: ~
-# link: ~
-citation: <em>Journal Name</em> <b>vol</b>, pag-pag
-doi: 00.0000/aaa.0000
+  - article
+slug: mpa-time-series
+Status: Published
+comments: no
+kind: article
+link: https://joss.theoj.org/papers/10.21105/joss.02179
+citation: "Van Benschoten A, Ouyang A, <b>Bischoff F</b>, Marrs T. <b>MPA: a novel cross-language API for time series analysis</b>. <em>Journal of Open Source Software</em>. 2020;5(49):2179."
+doi: 10.21105/joss.02179
 ---
 
 **Purpose**: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras et diam sit amet arcu laoreet volutpat. Mauris a velit urna. Ut consectetur dui libero. Donec eleifend, massa hendrerit sagittis consectetur, elit tortor cursus nisl, nec consequat mi arcu et libero. Vivamus semper egestas tortor, id maximus metus maximus sed. Nam sed diam interdum turpis tristique lobortis. Donec at ipsum ut augue pharetra tincidunt vitae ut nulla. Donec ut tincidunt lorem. Mauris eu orci tortor. Pellentesque maximus iaculis nisl vel fermentum. Mauris egestas urna blandit turpis efficitur eleifend. Vivamus ac auctor neque, at tincidunt leo.

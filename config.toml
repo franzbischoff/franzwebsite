@@ -117,3 +117,9 @@ favicon = "favicon.ico"
   icon_pack = "fa"
   link = "https://www.r-bloggers.com/"
   text = "R-Bloggers"
+
+[[params.blogroll]]
+  icon = "tags"
+  icon_pack = "fa"
+  link = "https://matrixprofile.org/"
+  text = "Matrix Profile Foundation"
