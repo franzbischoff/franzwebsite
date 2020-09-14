@@ -109,7 +109,7 @@ favicon = "favicon.ico"
 [[params.social]]
   icon = "researchgate"
   icon_pack = "ai"
-  link = "https://www.researchgate.net/profile/franzbischoff"
+  link = "https://www.researchgate.net/profile/Francisco_Bischoff"
   text = "ResearchGate"
 
 [[params.blogroll]]
