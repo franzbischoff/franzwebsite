@@ -11,7 +11,7 @@ Graduated in Medicine at the Federal University of Rio Grande do Sul, Brazil. Sp
 
 <ul class="fa-ul">
   <li><a href="https://github.com/franzbischoff/"><i class="fa-li fa fa-github-alt" style="padding-top:3px;"></i>franzbischoff on GitHub</a></li>
-  <li><a href="https://www.researchgate.net/profile/franzbischoff"><i class="fa-li ai ai-researchgate" style="padding-top:3px;"></i>ResearchGate</a></li>
+  <li><a href="https://www.researchgate.net/profile/Francisco_Bischoff"><i class="fa-li ai ai-researchgate" style="padding-top:3px;"></i>ResearchGate</a></li>
   <li><a href="https://www.linkedin.com/in/franzbischoff/"><i class="fa-li fa fa-linkedin" style="padding-top:3px;"></i>LinkedIn</a></li>
   <li><a href="https://orcid.org/0000-0002-5301-8672"><i class="fa-li ai ai-orcid" style="padding-top:3px;"></i>ORCID</a></li>
 </ul>
