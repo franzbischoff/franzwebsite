@@ -6,7 +6,7 @@ author:
   - Bischoff, Francisco
   - Marrs, Tyler
 date: '2020-03-15'
-slug: test-article-franz
+slug: mpa-time-series
 categories: []
 tags:
   - article
