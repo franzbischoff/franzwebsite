@@ -1,21 +1,15 @@
 ---
-title: MPA: a novel cross-language API for time series analysis
-author: 
-  - Van Benschoten, Andrew
-  - Ouyang, Austin
-  - Bischoff, Francisco
-  - Marrs, Tyler
-date: '2020-03-15'
-slug: mpa-time-series
-categories: []
+title: MPA a novel cross-language API for time series analysis
+author: Andrew Van Benschoten; Austin Ouyang; Francisco Bischoff; Tyler Marrs
+date: '2020-03-19'
 tags:
   - article
+slug: mpa-time-series
 Status: Published
 comments: no
 kind: article
-# file: ~
 link: https://joss.theoj.org/papers/10.21105/joss.02179
-citation: 1. Van Benschoten A, Ouyang A, Bischoff F, Marrs T. MPA: a novel cross-language API for time series analysis. <em>Journal of Open Source Software<em>. 2020;5(49):2179. doi:10.21105/joss.02179
+citation: 1. Van Benschoten A, Ouyang A, Bischoff F, Marrs T. MPA: a novel cross-language API for time series analysis. Journal of Open Source Software. 2020;5(49):2179. doi:10.21105/joss.02179
 doi: 10.21105/joss.02179
 ---
 
