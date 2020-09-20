@@ -1,0 +1,70 @@
+---
+title: 100 Time Series Data Mining Questions - Part 4
+author: Francisco Bischoff
+date: '2020-09-20'
+slug: 100-time-series-part-4
+categories:
+  - r-bloggers
+  - datamining
+  - R
+  - timeseries
+  - tsmp
+tags: []
+publishDate: '2020-09-20T12:00:00+01:00'
+mathjax: yes
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>In the <a href="/posts/100-time-series-part-3">last post</a> we’ve understood and find Discords in our data.</p>
+<p>For the next question, we will still be using the datasets available at <a href="https://github.com/matrix-profile-foundation/mpf-datasets" class="uri">https://github.com/matrix-profile-foundation/mpf-datasets</a> so you can try this at home.</p>
+<p>The original code (MATLAB) and data are <a href="https://www.cs.ucr.edu/~eamonn/HundredQuestions.zip">here</a>.</p>
+<p>Now let’s start:</p>
+<ol start="4" style="list-style-type: decimal">
+<li>Is there any pattern that is common to these two time series?</li>
+</ol>
+<p>Now we will see one of the most interesting and fast jobs that the Matrix Profile can do (there are more, for sure).</p>
+<p>In the later tasks, we were comparing a dataset with itself. Now we will compare two datasets, using a rolling window.</p>
+<p>This may sound trivial, but as always, you need to know your data.</p>
+<p>First, let’s load the <code>tsmp</code> library and import our datasets:</p>
+<pre class="r"><code># install.packages(&#39;tsmp&#39;)
+
+library(tsmp)
+
+baseurl &lt;- &quot;https://raw.githubusercontent.com/matrix-profile-foundation/mpf-datasets/102b8b0451cc9436879c025d21d5709cb4c8a601/&quot;
+dataset_queen &lt;- read.csv(paste0(baseurl, &quot;real/mfcc_queen.csv&quot;), header = FALSE)$V1
+dataset_vanilla &lt;- read.csv(paste0(baseurl, &quot;real/mfcc_vanilla_ice.csv&quot;), header = FALSE)$V1</code></pre>
+<p>And plot it as always:</p>
+<pre class="r"><code>def_par &lt;- par(no.readonly = TRUE)  # always save the previous configuration
+par(mfrow = c(2, 1), cex = 0.8)
+plot(dataset_queen, main = &quot;Queen Song&quot;, lwd = 1, type = &quot;l&quot;, ylab = &quot;&quot;, xlim = c(0, 25000))
+plot(dataset_vanilla, main = &quot;Vanilla Ice Song&quot;, lwd = 1, type = &quot;l&quot;, ylab = &quot;&quot;, xlim = c(0, 
+    25000))</code></pre>
+<p><img src="/posts/2020-09-13-100-time-series-part-4_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>par(def_par)  # and in the end, restore the configurations</code></pre>
+<p>Now, remember, know your data. These are sound data. More precisely, these are one of the <a href="https://en.wikipedia.org/wiki/Mel-frequency_cepstrum">MFCC</a> representation of these musics that allows us to better represent the sound.</p>
+<p>As you may (or not) remember, the <a href="https://www.cs.unm.edu/~mueen/FastestSimilaritySearch.html">MASS</a> algorithm normalizes the data by default, and this may be helpful to find patterns that are basically the same, but differ in amplitude, for example. Here, in this case, normalizing the data would basically mess up with our task! The reason is simple: you can have sequences of the same notes, but with a higher or lower pitch, so they are not the same.</p>
+<p>In this case, we will use the <a href="https://sites.google.com/view/simple-fast">SiMPle</a> algorithm that uses a non-normalized version of MASS.</p>
+<pre class="r"><code># First we will crop the Queen to be the same size of Vanilla Ice
+dataset_queen &lt;- dataset_queen[1:length(dataset_vanilla)]
+# and use the SiMPle algorithm. This algorithm is not optimized yet... so it takes more
+# time.
+mp_obj &lt;- simple_fast(cbind(dataset_queen, dataset_vanilla), window_size = 300, exclusion_zone = 1, 
+    verbose = 1)</code></pre>
+<pre><code>## Finished in 30.35 secs</code></pre>
+<pre class="r"><code># and now let&#39;s plot all together:
+def_par &lt;- par(no.readonly = TRUE)  # always save the previous configuration
+par(mfrow = c(3, 1), cex = 0.8)
+plot(dataset_queen, main = &quot;Queen Song&quot;, lwd = 1, type = &quot;l&quot;, ylab = &quot;&quot;, xlim = c(0, 25000))
+plot(dataset_vanilla, main = &quot;Vanilla Ice Song&quot;, lwd = 1, type = &quot;l&quot;, ylab = &quot;&quot;, xlim = c(0, 
+    25000))
+plot(mp_obj$mp, main = &quot;Matrix Profile&quot;, lwd = 1, type = &quot;l&quot;, ylab = &quot;&quot;, xlim = c(0, 25000))</code></pre>
+<p><img src="/posts/2020-09-13-100-time-series-part-4_files/figure-html/simple_plot-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>par(def_par)  # and in the end, restore the configurations</code></pre>
+<p>You can see that the lower parts of the Matrix Profile align well with that famous bassline from “Under Pressure” by Queen which was plagiarized by Vanilla Ice.</p>
+<p>So we did it again!</p>
+<p>This ends our fourth question of one hundred (let’s hope so!).</p>
+<p>Until next time.</p>
+<p>PS: When I was writing this post, I realized that the <code>tsmp</code> package lacks some tools to better visualize what is going on. I promise that in a later version of the package I’ll cover this issue, and I’ll get back to this post (in a new post).</p>
+<p><a href="/posts/100-time-series-part-3">previous post in this series</a></p>
