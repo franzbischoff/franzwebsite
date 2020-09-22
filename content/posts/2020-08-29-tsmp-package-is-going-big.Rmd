@@ -27,3 +27,5 @@ This package will be specialized on low-level (Rcpp) implementation of MASS, STA
 `matrixprofiler` will tend to be less updated and very stable. Those who just want the basics, will get to work with this package alone, but it is safer to install the `tsmp` and have the former as dependency.
 
 Stay tuned for the first release.
+
+[Test](https://patient-cherry-7bc4.franzbischoff.workers.dev)
