@@ -91,4 +91,4 @@ Until next time.
 
 PS: When I was writing this post, I realized that the `tsmp` package lacks some tools to better visualize what is going on with the SiMPle approach. I promise that in a later version of the package I'll cover this issue, and get back to this post.
 
-[previous post in this series](/posts/100-time-series-part-3)
+[previous post in this series](/posts/100-time-series-part-3) -- [next post in this series](/posts/100-time-series-part-5)
