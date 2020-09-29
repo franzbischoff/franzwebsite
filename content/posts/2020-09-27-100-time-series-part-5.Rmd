@@ -76,4 +76,4 @@ This ends our fifth question of one hundred (let's hope so!).
 
 Until next time. 
 
-[previous post in this series](/posts/100-time-series-part-4)
+[previous post in this series](/posts/100-time-series-part-4) -- [next post in this series](/posts/100-time-series-part-6)
