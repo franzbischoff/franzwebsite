@@ -2,6 +2,11 @@
 title: "Software"
 categories:
 - R
+editor_options:
+  markdown:
+    mode: markdown
 ---
 
-Soon
+-   R Language
+
+    -   [tsmp](https://github.com/matrix-profile-foundation/tsmp/ "tsmp"): is a package that implements the Matrix Profile and the algorithms published in scientific papers.

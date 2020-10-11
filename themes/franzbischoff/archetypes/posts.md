@@ -6,6 +6,9 @@ categories:
 - forecasting
 - statistics
 mathjax: true
+editor_options:
+  markdown:
+    mode: markdown
 ---
 
 {{% figure src="" alt="" caption="" %}}

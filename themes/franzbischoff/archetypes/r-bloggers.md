@@ -10,4 +10,7 @@ categories:
   - timeseries
   - tsmp
 mathjax: true
+editor_options:
+  markdown:
+    mode: markdown
 ---
