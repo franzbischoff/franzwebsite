@@ -1,0 +1,127 @@
+---
+title: 100 Time Series Data Mining Questions - Part 7
+author: Francisco Bischoff
+date: '2020-10-12'
+categories:
+  - datamining
+  - R
+  - r-bloggers
+  - timeseries
+  - tsmp
+slug: 100-time-series-part-7
+publishDate: '2020-10-12T12:00:00+01:00'
+mathjax: yes
+editor_options:
+  markdown:
+    mode: markdown
+---
+
+In the [last post](/posts/100-time-series-part-6), we were able to identify when a regime change occurs.
+Today we will focus on speed (well, a trade-off)
+
+For the next question, we will still be using the datasets available at <https://github.com/matrix-profile-foundation/mpf-datasets> so you can try this at home.
+
+The original code (MATLAB) and data are [here](https://www.cs.ucr.edu/~eamonn/HundredQuestions.zip).
+
+Now let's start:
+
+7.  How do I quickly search this long dataset for patterns, if an approximate search is acceptable?
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
+                      fig.align = "center", fig.width = 10)
+```
+
+As shown in previous posts, the exact search is surprisingly fast under Euclidean Distance.
+However, you want more.
+You don't have 10 minutes; you need it now!
+Well, we can do a little trade-off: downsample the data and have an approximate answer.
+Or, we can use one any-time algorithm (and also have an approximate answer).
+
+I'll cover both methods here.
+But first, what is downsample, and what is any-time?
+
+-   **Downsample** may be evident for most readers, but I'll explain it anyway. Downsample is basically a lower resolution of our data. For example, we can jump every other datapoint and get a new dataset with half of its size (this is the laziest way). We can do better, get the mean of any interval to get a reduced dataset. There are lots of downsampling algorithms [available](https://en.wikipedia.org/wiki/Downsampling_(signal_processing)). We will use the [PAA](https://jmotif.github.io/sax-vsm_site/morea/algorithm/PAA.html) algorithm (Piecewise Aggregate Approximation of time series).
+-   **Any-time** is an algorithm that can return an answer, well, any-time. This means that the Matrix Profile is being gradually computed and closer to the exact answer, but we stopped earlier and have an approximate result.
+
+We will use the dataset we used for [summarization](/posts/100-time-series-part-5) (Italian Power Demand) with about 30k datapoints.
+
+First, let's load the `tsmp` library and import our dataset:
+
+```{r main, echo=TRUE, message=FALSE, warning=FALSE}
+# install.packages("tsmp")
+
+library(tsmp)
+
+baseurl <- "https://raw.githubusercontent.com/matrix-profile-foundation/mpf-datasets/05efe885cff4b2266067ad62c4f6fa2b537ad2a2/"
+dataset <- read.csv(paste0(baseurl, "real/italianpowerdemand.csv"), header = FALSE)$V1
+dataset <- dataset[1:29920] # here we need to make the data divisible by the value we will use in PAA. This will be fixed in further versions.
+```
+
+And plot it as always:
+
+```{r dataset, fig.height=2.5}
+plot(dataset, lwd = 1, type = "l", main = "Italian Power Demand", ylab = "kWh", xlab = "time (hourly)")
+```
+
+First, we will proceed as usual:
+
+```{r full, fig.height=7}
+
+mp_obj <- tsmp(dataset, window_size = 168, n_workers = 4, verbose = 1)
+
+```
+
+Search for motifs:
+
+```{r full_motif, fig.height=5}
+
+mp_obj %>% find_motif(n_motifs = 1, n_neighbors = 0) %T>% plot
+```
+
+Now, using `PAA` of 8 (this means the dataset will be 8 times smaller than the original).
+
+```{r paa, fig.height=7}
+
+mp_obj_paa <- tsmp(dataset, window_size = 168, n_workers = 4, verbose = 1, paa = 8)
+
+```
+
+Search for motifs:
+
+```{r paa_motif, fig.height=5}
+
+mp_obj_paa %>% find_motif(n_motifs = 1, n_neighbors = 0) %T>% plot
+```
+
+A full exact computation takes approximately 20 seconds, and the approximate computation takes less than 1 second and produces (at least in this example) almost exactly the same answer.
+The answer is just slightly shifted in time.
+Remember, you need to multiply the indexes by the PAA value.
+
+How well this will work for you depends on the intrinsic dimensionality of your data.
+
+And last but not least, we will use one of the any-time algorithms:
+
+```{r any, fig.height=7}
+
+mp_obj_any <- tsmp(dataset, mode = "stamp", s_size = 29920 %/% 50, window_size = 168, verbose = 1)
+```
+
+Search for motifs:
+
+```{r any_motif, fig.height=5}
+
+mp_obj_any %>% find_motif(n_motifs = 1, n_neighbors = 0) %T>% plot
+```
+
+In this example, the any-time algorithm was set to finish after analyzing only 2% of the data, and the answer was incredibly almost the same as the exact computation.
+Note that it took about 2.5 seconds (slower than using PAA), but here we've used the STAMP algorithm that is several times slower than STOMP.
+And we've used only one thread!
+
+So we did it again!
+
+This ends our seventh question of one hundred (let's hope so!).
+
+Until next time.
+
+[previous post in this series](/posts/100-time-series-part-6)

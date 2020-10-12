@@ -11,28 +11,39 @@ categories:
 slug: 100-time-series-part-6
 publishDate: '2020-09-28T12:00:00+01:00'
 mathjax: yes
+editor_options:
+  markdown:
+    mode: markdown
 ---
 
-In the [last post](/posts/100-time-series-part-5) took a very long time series, and we summarize it. Now we will do something that seems related when we look at the regime bar: regime change detection.
+In the [last post](/posts/100-time-series-part-5) took a very long time series, and we summarize it.
+Now we will do something that seems related when we look at the regime bar: regime change detection.
 
-For the next question, we will still be using the datasets available at https://github.com/matrix-profile-foundation/mpf-datasets so you can try this at home.
+For the next question, we will still be using the datasets available at <https://github.com/matrix-profile-foundation/mpf-datasets> so you can try this at home.
 
 The original code (MATLAB) and data are [here](https://www.cs.ucr.edu/~eamonn/HundredQuestions.zip).
 
 Now let's start:
 
-6. When does the regime change in this time series?
+6.  When does the regime change in this time series?
 
 ```{r setup, echo=FALSE}
 knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
                       fig.align = "center", fig.width = 10)
 ```
 
-This task exploits another interesting characteristic of Matrix Profile. We know that each position in the Profile Index points to its nearest neighbor. Let's imagine all these connections as "arcs," and we will see something interesting: in some regions, it looks like several arcs are pointing to that place. Why's that?
+This task exploits another interesting characteristic of Matrix Profile.
+We know that each position in the Profile Index points to its nearest neighbor.
+Let's imagine all these connections as "arcs," and we will see something interesting: in some regions, it looks like several arcs are pointing to that place.
+Why's that?
 
-Imagine, if there is a change in the regime in that time series, we can infer that the nearest neighbor of the previous pattern will not be in the new pattern. It is logical to think that these arcs will tend to be grouped inside each regime region.
+Imagine, if there is a change in the regime in that time series, we can infer that the nearest neighbor of the previous pattern will not be in the new pattern.
+It is logical to think that these arcs will tend to be grouped inside each regime region.
 
-Then, how to deal with this feature? Arc counts. Take any point in the time series, and count how many arcs are passing thru that point. The fewer arcs, the greater is the probability that we are changing regimes.
+Then, how to deal with this feature?
+Arc counts.
+Take any point in the time series, and count how many arcs are passing thru that point.
+The fewer arcs, the greater is the probability that we are changing regimes.
 
 Let's look to the plot below, where we plot the arcs (not all of them), and in the middle, we see the 'arc count.' There we see that there are two valleys, and they match almost precisely where the data changes pattern.
 
@@ -41,7 +52,8 @@ library(tsmp)
 test <- tsmp(mp_fluss_data$walkjogrun$data, window_size = 80, n_workers = 4, verbose = 0) %>% fluss_cac() %T>% plot
 ```
 
-Well, I think I've already spoiled all the fun. But, let's do all the steps anyway:
+Well, I think I've already spoiled all the fun.
+But, let's do all the steps anyway:
 
 First, let's load the `tsmp` library and import our dataset:
 
@@ -59,7 +71,11 @@ And plot it as always:
 ```{r dataset, fig.height=2.5}
 plot(dataset, lwd = 1, type = "l", main = "Pig Internal Bleeding", ylab = "ABP (mmHg)", xlab = "time")
 ```
-This is not the same dataset from the first figure. This dataset changes only once because it has registered the arterial blood pressure of a pig before and after some bleeding. Well, we can imagine that there will be a regime change. So let's find it quickly.
+
+This is not the same dataset from the first figure.
+This dataset changes only once because it has registered the arterial blood pressure of a pig before and after some bleeding.
+Well, we can imagine that there will be a regime change.
+So let's find it quickly.
 
 Here is the code:
 
@@ -74,17 +90,19 @@ toc <- Sys.time() - tic
 cat("\nFinished in", toc, "seconds\n")
 ```
 
-We can barely see in the dataset where is the regime change, but I tell you that it is at timestamp 7500->7501.
+We can barely see in the dataset where is the regime change, but I tell you that it is at timestamp 7500-\>7501.
 
-We used a window size of 100 because it is approximately the length of one period of arterial pressure (or the period of whatever repeated patterns you have in your data); however, up to half or twice that value would work just as well. Then the `fluss()` function managed to extract where was located the minimum arc count, at 7460 (that is incredible near the truth; it is in the middle of the rolling window).
+We used a window size of 100 because it is approximately the length of one period of arterial pressure (or the period of whatever repeated patterns you have in your data); however, up to half or twice that value would work just as well.
+Then the `fluss()` function managed to extract where was located the minimum arc count, at 7460 (that is incredible near the truth; it is in the middle of the rolling window).
 
-To finalize, see that we set `num_segments` to `1`. This is the only parameter we should care about here. That informs the algorithm of how many changes it needs to look for.
+To finalize, see that we set `num_segments` to `1`.
+This is the only parameter we should care about here.
+That informs the algorithm of how many changes it needs to look for.
 
 So we did it again!
 
 This ends our sixth question of one hundred (let's hope so!).
 
-Until next time. 
+Until next time.
 
-[previous post in this series](/posts/100-time-series-part-5)
-
+[previous post in this series](/posts/100-time-series-part-5) -- [next post in this series](/posts/100-time-series-part-7)
