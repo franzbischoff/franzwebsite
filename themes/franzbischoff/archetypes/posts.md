@@ -11,8 +11,13 @@ editor_options:
     mode: markdown
 ---
 
-{{% figure src="" alt="" caption="" %}}
+```{css, echo=FALSE}
+img {
+  display: block; margin-left: auto; margin-right: auto;
+}
+```
 
-{{< highlight r >}}
-
-{{< /highlight >}}
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
+                      fig.align = "center", fig.width = 10)
+```
