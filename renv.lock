@@ -198,13 +198,6 @@
       "Repository": "CRAN",
       "Hash": "d0a62b247165aabf397fded504660d8a"
     },
-    "lattice": {
-      "Package": "lattice",
-      "Version": "0.20-41",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "fbd9285028b0263d76d18c95ae51a53d"
-    },
     "magrittr": {
       "Package": "magrittr",
       "Version": "2.0.1",
