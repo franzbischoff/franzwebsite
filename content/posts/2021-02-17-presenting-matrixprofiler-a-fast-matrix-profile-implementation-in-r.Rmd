@@ -30,21 +30,21 @@ knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy
 
 It took some time, as you can see in the [previous post](https://franzbischoff.rbind.io/posts/tsmp-package-is-going-big), but the [`matrixprofiler`](https://cran.r-project.org/package=matrixprofiler) package is done!
 
-What this means?
+What does this mean?
 
 The [UCR Matrix Pofile](https://www.cs.ucr.edu/~eamonn/MatrixProfile.html) is growing, undoubtedly, and the [tsmp](https://cran.r-project.org/package=tsmp) package is getting almost 700 downloads per month.
 We decided that we needed to separate the **core** from the **practical usage** of Matrix Profile.
 
-So the [`matrixprofiler`](https://cran.r-project.org/package=matrixprofiler) package has born, and is focused on having the low-level code (`C/C++`), for speed and robustness.
-On top of that, the current `tsmp` package will focus on implementing the algorithms that uses the matrix profile for actual data science, in a high-level code (`R language`), easier to understand to the actual user/scientist, using as leverage the speed of [`matrixprofiler`](https://cran.r-project.org/package=matrixprofiler).
+So the [`matrixprofiler`](https://cran.r-project.org/package=matrixprofiler) package has been born and is focused on having the low-level code (`C/C++`), for speed and robustness.
+On top of that, the current `tsmp` package will focus on implementing the algorithms that use the matrix profile for actual data science, in a high-level code (`R language`), easier to understand to the actual user/scientist, using as leverage the speed of [`matrixprofiler`](https://cran.r-project.org/package=matrixprofiler).
 You can see the [benchmarks here](https://rpubs.com/franzbischoff/matrixprofiler).
 
 This new package is not intended to be used directly (but as a dependency of `tsmp`), but it can be.
-Just be careful too provide the required data types and everything will work fine.
+Just be careful to provide the required data types, and everything will work fine.
 
 In addition to the core algorithms: `mass`, `stamp`, `stomp`, etc; this package offers fast and accurate implementation of several `math` and `window` functions like `movmean`, `movmax`, `zero_crossing`, and will in the future provide more basic tools to be used by the high-level algorithms.
 
-Now starts the `tsmp` phase of getting rid of the core algorithms, and leverage its new dependency: [`matrixprofiler`](https://cran.r-project.org/package=matrixprofiler).
+Now starts the `tsmp` phase of getting rid of the core algorithms and leverage its new dependency: [`matrixprofiler`](https://cran.r-project.org/package=matrixprofiler).
 
 Useful links:
 
