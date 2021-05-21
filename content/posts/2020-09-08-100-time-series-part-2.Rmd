@@ -24,8 +24,10 @@ Now let's start:
 2. Are there any repeated patterns in my data?
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
-                      fig.align = "center", fig.width = 10)
+knitr::opts_chunk$set(
+  warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
+  fig.align = "center", fig.width = 10
+)
 ```
 
 Now we don't know what we are looking for, but we want to discover something. Not just one pattern, but patterns that repeat, and may look similar or not.
@@ -39,7 +41,6 @@ library(tsmp)
 
 baseurl <- "https://raw.githubusercontent.com/matrix-profile-foundation/mpf-datasets/a3a3c08a490dd0df29e64cb45dbb355855f4bcb2/"
 dataset <- unlist(read.csv(paste0(baseurl, "synthetic/motifs-discords-small.txt"), header = FALSE), use.names = FALSE)
-
 ```
 
 And plot it as before:
@@ -80,13 +81,12 @@ Continuing trying to find the patterns:
 
 ```{r motif1, fig.height=6}
 # the `tsmp` package implements the pipe feature from `magrittr` package: https://magrittr.tidyverse.org/
-# 
+#
 tictac2 <- Sys.time()
 mp_obj %>% find_motif(n_motifs = 3) %T>% plot()
 tictac2 <- Sys.time() - tictac2
 
 cat(paste("find_motif() finished in ", tictac2, "seconds (with plot!)\n\n"))
-
 ```
 
 Here we see a curious result. I managed to get the three parts, but I confess I did a tweak. As we see, that sinusoidal wave that is in the 3rd motif (the green one) is very similar to the sinusoidal wave from the 1st motif. So why the neighbours (dashed lines) of Motif 1 don't find that pattern? That's because of the `window_size` and `exclusion_zone` that an eager reader may have seen I set to `1` in tsmp() function, and, I used specifically the window of `20`, that fits what I wanted.
@@ -100,7 +100,9 @@ As promised, I'll use the MPA for a lazy approach:
 ```{r mpa, fig.height=6}
 # You'll see that this approach is way faster, but this is due to programming optimization that will be available in later versions.
 tictac3 <- Sys.time()
-compute(dataset, 64) %>% motifs() %>% visualize()
+compute(dataset, 64) %>%
+  motifs() %>%
+  visualize()
 tictac3 <- Sys.time() - tictac3
 
 cat(paste("compute(), motifs(), visualize() finished in ", tictac3, "seconds (with plot!)\n\n"))

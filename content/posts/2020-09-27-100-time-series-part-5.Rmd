@@ -24,8 +24,10 @@ Now let's start:
 5. If you had to summarize this long time series with just two shorter examples, what would they be?
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
-                      fig.align = "center", fig.width = 10)
+knitr::opts_chunk$set(
+  warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
+  fig.align = "center", fig.width = 10
+)
 ```
 
 This is a new kind of question. It's about summarization, not actually finding motifs.

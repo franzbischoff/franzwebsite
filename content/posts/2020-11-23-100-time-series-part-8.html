@@ -16,9 +16,7 @@ editor_options:
     mode: markdown
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+<script src="/franzbischoff.rbind.iormarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>In the <a href="/posts/100-time-series-part-6">last post</a>, we were able to identify when a regime change occurs.
@@ -51,14 +49,16 @@ dataset &lt;- read.csv(paste0(baseurl, &quot;real/italianpowerdemand.csv&quot;),
 dataset &lt;- dataset[1:29920]  # here we need to make the data divisible by the value we will use in PAA. This will be fixed in further versions.</code></pre>
 <p>And plot it as always:</p>
 <pre class="r"><code>plot(dataset, lwd = 1, type = &quot;l&quot;, main = &quot;Italian Power Demand&quot;, ylab = &quot;kWh&quot;, xlab = &quot;time (hourly)&quot;)</code></pre>
-<p><img src="/posts/2020-11-23-100-time-series-part-8_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="/franzbischoff.rbind.ioposts/2020-11-23-100-time-series-part-8_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>First, we will proceed as usual:</p>
 <pre class="r"><code>mp_obj &lt;- tsmp(dataset, window_size = 168, n_workers = 4, verbose = 1)</code></pre>
 <pre><code>## Warming up parallel with 4 cores.</code></pre>
-<pre><code>## Finished in 28.91 secs</code></pre>
+<pre><code>## Finished in 22.35 secs</code></pre>
 <p>Search for motifs:</p>
-<pre class="r"><code>mp_obj %&gt;% find_motif(n_motifs = 1, n_neighbors = 0) %T&gt;% plot</code></pre>
-<p><img src="/posts/2020-11-23-100-time-series-part-8_files/figure-html/full_motif-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mp_obj %&gt;%
+    find_motif(n_motifs = 1, n_neighbors = 0) %T&gt;%
+    plot</code></pre>
+<p><img src="/franzbischoff.rbind.ioposts/2020-11-23-100-time-series-part-8_files/figure-html/full_motif-1.png" width="960" style="display: block; margin: auto;" /></p>
 <pre><code>## Matrix Profile
 ## --------------
 ## Profile size = 29753 
@@ -74,10 +74,12 @@ dataset &lt;- dataset[1:29920]  # here we need to make the data divisible by the
 <p>Now, using <code>PAA</code> of 8 (this means the dataset will be 8 times smaller than the original).</p>
 <pre class="r"><code>mp_obj_paa &lt;- tsmp(dataset, window_size = 168, n_workers = 4, verbose = 1, paa = 8)</code></pre>
 <pre><code>## Warming up parallel with 4 cores.</code></pre>
-<pre><code>## Finished in 1.13 secs</code></pre>
+<pre><code>## Finished in 0.71 secs</code></pre>
 <p>Search for motifs:</p>
-<pre class="r"><code>mp_obj_paa %&gt;% find_motif(n_motifs = 1, n_neighbors = 0) %T&gt;% plot</code></pre>
-<p><img src="/posts/2020-11-23-100-time-series-part-8_files/figure-html/paa_motif-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mp_obj_paa %&gt;%
+    find_motif(n_motifs = 1, n_neighbors = 0) %T&gt;%
+    plot</code></pre>
+<p><img src="/franzbischoff.rbind.ioposts/2020-11-23-100-time-series-part-8_files/figure-html/paa_motif-1.png" width="960" style="display: block; margin: auto;" /></p>
 <pre><code>## Matrix Profile
 ## --------------
 ## Profile size = 3720 
@@ -96,10 +98,12 @@ Remember, you need to multiply the indexes by the PAA value.</p>
 <p>How well this will work for you depends on the intrinsic dimensionality of your data.</p>
 <p>And last but not least, we will use one of the any-time algorithms:</p>
 <pre class="r"><code>mp_obj_any &lt;- tsmp(dataset, mode = &quot;stamp&quot;, s_size = 29920%/%50, window_size = 168, verbose = 1)</code></pre>
-<pre><code>## Finished in 4.14 secs</code></pre>
+<pre><code>## Finished in 2.68 secs</code></pre>
 <p>Search for motifs:</p>
-<pre class="r"><code>mp_obj_any %&gt;% find_motif(n_motifs = 1, n_neighbors = 0) %T&gt;% plot</code></pre>
-<p><img src="/posts/2020-11-23-100-time-series-part-8_files/figure-html/any_motif-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mp_obj_any %&gt;%
+    find_motif(n_motifs = 1, n_neighbors = 0) %T&gt;%
+    plot</code></pre>
+<p><img src="/franzbischoff.rbind.ioposts/2020-11-23-100-time-series-part-8_files/figure-html/any_motif-1.png" width="960" style="display: block; margin: auto;" /></p>
 <pre><code>## Matrix Profile
 ## --------------
 ## Profile size = 29753 
@@ -110,7 +114,7 @@ Remember, you need to multiply the indexes by the PAA value.</p>
 ## Motif
 ## -----
 ## Motif pairs found = 1 
-## Motif pairs indexes = [17857, 18193]  
+## Motif pairs indexes = [17861, 18197]  
 ## Motif pairs neighbors = []</code></pre>
 <p>In this example, the any-time algorithm was set to finish after analyzing only 2% of the data, and the answer was incredibly almost the same as the exact computation.
 Note that it took about 2.5 seconds (slower than using PAA), but here we’ve used the STAMP algorithm that is several times slower than STOMP.
@@ -118,4 +122,4 @@ And we’ve used only one thread!</p>
 <p>So we did it again!</p>
 <p>This ends our seventh question of one hundred (let’s hope so!).</p>
 <p>Until next time.</p>
-<p><a href="/posts/100-time-series-part-6">previous post in this series</a></p>
+<p><a href="/posts/100-time-series-part-7">previous post in this series</a></p>

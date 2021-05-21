@@ -16,7 +16,7 @@ editor_options:
     mode: markdown
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/franzbischoff.rbind.iormarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>In the <a href="/posts/100-time-series-part-5">last post</a> took a very long time series, and we summarize it.
@@ -38,7 +38,7 @@ Arc counts.
 Take any point in the time series, and count how many arcs are passing thru that point.
 The fewer arcs, the greater is the probability that we are changing regimes.</p>
 <p>Let’s look to the plot below, where we plot the arcs (not all of them), and in the middle, we see the ‘arc count.’ There we see that there are two valleys, and they match almost precisely where the data changes pattern.</p>
-<p><img src="/posts/2020-10-03-100-time-series-part-6_files/figure-html/unnamed-chunk-1-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="/franzbischoff.rbind.ioposts/2020-10-03-100-time-series-part-6_files/figure-html/unnamed-chunk-1-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>Well, I think I’ve already spoiled all the fun.
 But, let’s do all the steps anyway:</p>
 <p>First, let’s load the <code>tsmp</code> library and import our dataset:</p>
@@ -51,7 +51,7 @@ dataset &lt;- read.csv(paste0(baseurl, &quot;real/PigInternalBleedingDatasetArtP
     header = FALSE)$V1</code></pre>
 <p>And plot it as always:</p>
 <pre class="r"><code>plot(dataset, lwd = 1, type = &quot;l&quot;, main = &quot;Pig Internal Bleeding&quot;, ylab = &quot;ABP (mmHg)&quot;, xlab = &quot;time&quot;)</code></pre>
-<p><img src="/posts/2020-10-03-100-time-series-part-6_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="/franzbischoff.rbind.ioposts/2020-10-03-100-time-series-part-6_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>This is not the same dataset from the first figure.
 This dataset changes only once because it has registered the arterial blood pressure of a pig before and after some bleeding.
 Well, we can imagine that there will be a regime change.
@@ -63,8 +63,10 @@ mp_obj &lt;- tsmp(dataset, window_size = 100, n_workers = 4, verbose = 0)
 # The matrix profile doesn&#39;t need to be recomputed, we can apply any mining function on top
 # of it, and is fast!
 tic &lt;- Sys.time()
-mp_obj %&gt;% fluss(num_segments = 1) %T&gt;% plot</code></pre>
-<p><img src="/posts/2020-10-03-100-time-series-part-6_files/figure-html/tsmp-1.png" width="960" style="display: block; margin: auto;" /></p>
+mp_obj %&gt;%
+    fluss(num_segments = 1) %T&gt;%
+    plot</code></pre>
+<p><img src="/franzbischoff.rbind.ioposts/2020-10-03-100-time-series-part-6_files/figure-html/tsmp-1.png" width="960" style="display: block; margin: auto;" /></p>
 <pre><code>## Matrix Profile
 ## --------------
 ## Profile size = 14874 
@@ -84,7 +86,7 @@ mp_obj %&gt;% fluss(num_segments = 1) %T&gt;% plot</code></pre>
 <pre class="r"><code>toc &lt;- Sys.time() - tic
 cat(&quot;\nFinished in&quot;, toc, &quot;seconds\n&quot;)</code></pre>
 <pre><code>## 
-## Finished in 0.159081 seconds</code></pre>
+## Finished in 0.163022 seconds</code></pre>
 <p>We can barely see in the dataset where is the regime change, but I tell you that it is at timestamp 7500-&gt;7501.</p>
 <p>We used a window size of 100 because it is approximately the length of one period of arterial pressure (or the period of whatever repeated patterns you have in your data); however, up to half or twice that value would work just as well.
 Then the <code>fluss()</code> function managed to extract where was located the minimum arc count, at 7460 (that is incredible near the truth; it is in the middle of the rolling window).</p>

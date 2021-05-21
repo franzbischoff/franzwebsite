@@ -22,8 +22,10 @@ img {
 ```
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
-                      fig.align = "center", fig.width = 10)
+knitr::opts_chunk$set(
+  warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
+  fig.align = "center", fig.width = 10
+)
 ```
 
 In [March, 12th](https://tcrn.ch/3aSjWNY), Github has launched the [Github Classroom](https://classroom.github.com/) platform.
@@ -50,7 +52,7 @@ First, I tried to find a way to integrate RStudio Cloud with Github Classroom.
 No deal.
 RStudio Cloud has no API that can trigger a New Project. It requires you to copy the link and fill the form:
 
-![](index_files/rstudio-cloud-git.png){width="50%"}
+![](rstudio-cloud-git.png){width="50%"}
 
 The current solution uses [mybinder.org](https://mybinder.org/) as the cloud service that will create our RStudio session.
 If someone finds out how to use RStudio Cloud automatically, please, send me a message.

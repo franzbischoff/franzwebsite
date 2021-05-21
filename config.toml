@@ -1,14 +1,14 @@
-baseurl = "/"
+baseURL = "franzbischoff.rbind.io"
 title = "Francisco Bischoff"
 author = "Francisco Bischoff"
-copyright = "Copyright (c) 2020 Francisco Bischoff"
+copyright = "Copyright (c) 2021 Francisco Bischoff"
 canonifyurls = true
 paginate = 3
 theme="franzbischoff"
 languageCode = "en-us"
 googleAnalytics = "UA-160033971-1"
 disqusShortname = "franzbischoff"
-ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "\\.knit\\.md$", "\\.utf8\\.md$"]
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "\\.knit\\.md$", "\\.utf8\\.md$", "(^|/)renv$", "renv\\.lock$"]
 enableRobotsTXT = true
 relativeurls = false
 pluralizeListTitles = false
@@ -20,7 +20,7 @@ buildFuture = true
   priority = 0.5
 
 [markup.goldmark.renderer]
-  unsafe= true
+  unsafe = true
 
 [permalinks]
     post = "/:year/:month/:day/:slug/"
@@ -82,14 +82,14 @@ author = "Francisco Bischoff"
 description = "Christo nihil præponere."
 
 # options for highlight.js (version, additional languages, and theme)
-highlightjsVersion = "9.12.0"
+highlightjsVersion = "10.7.2"
 highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
 #highlightjsCDN = "//cdn.bootcss.com"
 highlightjsLang = ["r", "yaml", "tex"]
 highlightjsTheme = "github"
 
 MathJaxCDN = "//cdnjs.cloudflare.com/ajax/libs"
-MathJaxVersion = "2.7.5"
+MathJaxVersion = "3.1.4"
 
 # path to the favicon, under "static"
 favicon = "favicon.ico"

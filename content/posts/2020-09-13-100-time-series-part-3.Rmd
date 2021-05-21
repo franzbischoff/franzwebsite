@@ -25,8 +25,10 @@ Now let's start:
 3. What are the three most unusual days in this three-month-long dataset?
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
-                      fig.align = "center", fig.width = 10)
+knitr::opts_chunk$set(
+  warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
+  fig.align = "center", fig.width = 10
+)
 ```
 
 Now we don't know what we are looking for, but we want to discover something. Not just one pattern, but patterns that repeat, and may look similar or not.
@@ -44,8 +46,10 @@ dataset <- read.csv(paste0(baseurl, "real/nyc-taxi-anomalies.csv"), header = TRU
 dataset <- xts(dataset$value, as.POSIXct(dataset$timestamp))
 tzone(dataset) <- "UTC"
 dataset <- window(dataset, start = "2014-10-01", end = "2014-12-15")
-events <- xts(c("Columbus Day", "Daylight Saving Time", "Thanksgiving"), 
-               as.POSIXct(c("2014-10-13", "2014-11-02", "2014-11-27"), tz = "UTC"))
+events <- xts(
+  c("Columbus Day", "Daylight Saving Time", "Thanksgiving"),
+  as.POSIXct(c("2014-10-13", "2014-11-02", "2014-11-27"), tz = "UTC")
+)
 ```
 
 And plot it as always:
@@ -80,7 +84,7 @@ Now let's use the function `find_discord` to find these unusual patterns. Notice
 
 ```{r discord}
 # We already know the Matrix Profile Object, so I'll skip talking about it.
-mp_obj %>% find_discord(n_discords = 3, n_neighbors  = 0) %T>% plot
+mp_obj %>% find_discord(n_discords = 3, n_neighbors = 0) %T>% plot
 ```
 
 And here they are. Exactly where we'd foreseen and in the lower part of the potting are the normalized shape of these patterns.

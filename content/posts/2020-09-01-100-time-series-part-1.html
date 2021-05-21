@@ -12,7 +12,7 @@ slug: 100-time-series-part-1
 mathjax: yes
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/franzbischoff.rbind.iormarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>I decided to start this series of Time Series Data Mining base on Eamonn’s presentation, so that’s why the title is “100”. That’s the idea, but for now, we only have 19 questions ready to go.</p>
@@ -22,7 +22,7 @@ mathjax: yes
 <ol style="list-style-type: decimal">
 <li>Have we ever seen a pattern that looks just like this?</li>
 </ol>
-<p><img src="/posts/2020-09-01-100-time-series-part-1_files/figure-html/pattern-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="/franzbischoff.rbind.ioposts/2020-09-01-100-time-series-part-1_files/figure-html/pattern-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>The dataset comes from an accelerometer that records when a person is walking, jogging, or running.</p>
 <p>First, let’s load the <code>tsmp</code> library and import our dataset:</p>
 <pre class="r"><code># install.packages(&#39;tsmp&#39;)
@@ -33,7 +33,7 @@ baseurl &lt;- &quot;https://raw.githubusercontent.com/matrix-profile-foundation/
 dataset &lt;- unlist(read.csv(paste0(baseurl, &quot;real/walk-jog-run.txt&quot;), header = FALSE), use.names = FALSE)</code></pre>
 <p>And plot it:</p>
 <pre class="r"><code>plot(dataset, main = &quot;Dataset&quot;, type = &quot;l&quot;, ylab = &quot;&quot;, xlab = &quot;time&quot;)</code></pre>
-<p><img src="/posts/2020-09-01-100-time-series-part-1_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="/franzbischoff.rbind.ioposts/2020-09-01-100-time-series-part-1_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>This task is trivial with <a href="https://www.cs.unm.edu/~mueen/FastestSimilaritySearch.html">Mueen’s MASS</a> code…</p>
 <p>Here is where <code>tsmp</code> does all for you. All you need is to use the function <code>dist_profile</code> that will return an especial vector called “Distance Profile”. We will talk more about it later in this sequence of posts. This vector is inside the <code>list</code> that is returned by this function:</p>
 <pre class="r"><code>query &lt;- dataset[5001:5100]  # pretend you didn&#39;t see this line. This is the query from the first image above.
@@ -45,7 +45,7 @@ res &lt;- dist_profile(dataset, query)
 tictac1 &lt;- Sys.time() - tictac1
 
 cat(paste(&quot;dist_profile() finished in &quot;, tictac1, &quot;seconds\n\n&quot;))</code></pre>
-<pre><code>## dist_profile() finished in  0.00699996948242188 seconds</code></pre>
+<pre><code>## dist_profile() finished in  0.00699782371520996 seconds</code></pre>
 <pre class="r"><code>str(res)</code></pre>
 <pre><code>## List of 3
 ##  $ distance_profile: num [1:9902] 188 180 174 170 168 ...
@@ -68,7 +68,7 @@ first  # surprisingly (not) the value is the same as that we used to slice our q
 <p>Well, this tells us that at position 5001 there is a pattern that looks like our query. Let’s plot that with a closer look:</p>
 <pre class="r"><code>plot(dataset, main = &quot;Dataset&quot;, type = &quot;l&quot;, ylab = &quot;&quot;, xlab = &quot;time&quot;, xlim = c(4001, 6000))
 lines(5001:5100, query, col = 2)</code></pre>
-<p><img src="/posts/2020-09-01-100-time-series-part-1_files/figure-html/unnamed-chunk-3-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="/franzbischoff.rbind.ioposts/2020-09-01-100-time-series-part-1_files/figure-html/unnamed-chunk-3-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>Yes! There is a match! But there are more similar patterns? Here I just find that a new helper function could exist. As it doesn’t, let’s write a few lines (read the comments!):</p>
 <pre class="r"><code># This snippet will try to find what we call neighbours, that are patterns that are similar
 # to your query, but not the best match.  We know that &#39;Trivial Matches&#39; happens close to
@@ -80,7 +80,7 @@ st &lt;- sort(res$distance_profile, index.return = TRUE)  # this will order the 
 tictac2 &lt;- Sys.time() - tictac2
 
 cat(paste(&quot;sort() finished in &quot;, tictac2, &quot;seconds\n\n&quot;))</code></pre>
-<pre><code>## sort() finished in  0.00200009346008301 seconds</code></pre>
+<pre><code>## sort() finished in  0.00300097465515137 seconds</code></pre>
 <pre class="r"><code># the first one we know already is our best match. Let&#39;s now plot the results of three more
 # &#39;matches&#39;.
 
@@ -93,8 +93,8 @@ for (i in 1:5) {
     lines(st$ix[i]:(st$ix[i] + w - 1), dataset[st$ix[i]:(st$ix[i] + w - 1)], col = i + 1, lwd = 2)
     text(st$ix[i], -10, label = paste(&quot;match&quot;, i), adj = 0, col = i + 1, cex = 0.8)
 }</code></pre>
-<p><img src="/posts/2020-09-01-100-time-series-part-1_files/figure-html/unnamed-chunk-4-1.png" width="960" style="display: block; margin: auto;" /></p>
-<p>So we did it! We found the five best matches of our query, and it took only 0.0090001 seconds to do it!</p>
+<p><img src="/franzbischoff.rbind.ioposts/2020-09-01-100-time-series-part-1_files/figure-html/unnamed-chunk-4-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>So we did it! We found the five best matches of our query, and it took only 0.00999879837036133 seconds to do it!</p>
 <p>This ends our first question of one hundred (let’s hope so!).</p>
 <p>Until next time.</p>
 <p><a href="/posts/100-time-series-part-2">next post in this series</a></p>

@@ -28,8 +28,10 @@ Now let's start:
 7.  How do I quickly search this long dataset for patterns, if an approximate search is acceptable?
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
-                      fig.align = "center", fig.width = 10)
+knitr::opts_chunk$set(
+  warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
+  fig.align = "center", fig.width = 10
+)
 ```
 
 As shown in previous posts, the exact search is surprisingly fast under Euclidean Distance.

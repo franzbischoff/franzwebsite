@@ -23,8 +23,10 @@ So, let's start with number one:
 1. Have we ever seen a pattern that looks just like this?
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
-                      fig.align = "center", fig.width = 10)
+knitr::opts_chunk$set(
+  warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
+  fig.align = "center", fig.width = 10
+)
 ```
 
 ```{r pattern, echo=FALSE}
@@ -44,7 +46,6 @@ library(tsmp)
 
 baseurl <- "https://raw.githubusercontent.com/matrix-profile-foundation/mpf-datasets/a3a3c08a490dd0df29e64cb45dbb355855f4bcb2/"
 dataset <- unlist(read.csv(paste0(baseurl, "real/walk-jog-run.txt"), header = FALSE), use.names = FALSE)
-
 ```
 
 And plot it:
@@ -106,12 +107,10 @@ w <- 100
 
 plot(dataset, main = "Dataset", type = "l", ylab = "", xlab = "time", xlim = c(4500, 6200))
 
-for(i in 1:5) {
-  lines(st$ix[i]:(st$ix[i]+w-1), dataset[st$ix[i]:(st$ix[i]+w-1)], col = i+1, lwd = 2)
-  text(st$ix[i], -10, label = paste("match", i), adj = 0, col = i+1, cex = 0.8)
+for (i in 1:5) {
+  lines(st$ix[i]:(st$ix[i] + w - 1), dataset[st$ix[i]:(st$ix[i] + w - 1)], col = i + 1, lwd = 2)
+  text(st$ix[i], -10, label = paste("match", i), adj = 0, col = i + 1, cex = 0.8)
 }
-
-
 ```
 
 So we did it! We found the five best matches of our query, and it took only `r tictac1 + tictac2` seconds to do it!

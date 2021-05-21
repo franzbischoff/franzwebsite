@@ -13,7 +13,7 @@ publishDate: '2020-09-28T12:00:00+01:00'
 mathjax: yes
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/franzbischoff.rbind.iormarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>In the <a href="/posts/100-time-series-part-4">last post</a> we managed to find similar patterns between two time series.</p>
@@ -40,10 +40,11 @@ baseurl &lt;- &quot;https://raw.githubusercontent.com/matrix-profile-foundation/
 dataset &lt;- read.csv(paste0(baseurl, &quot;real/italianpowerdemand.csv&quot;), header = FALSE)$V1</code></pre>
 <p>And plot it as always:</p>
 <pre class="r"><code>plot(dataset, lwd = 1, type = &quot;l&quot;, main = &quot;Italian Power Demand&quot;, ylab = &quot;kWh&quot;, xlab = &quot;time (hourly)&quot;)</code></pre>
-<p><img src="/posts/2020-09-27-100-time-series-part-5_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="/franzbischoff.rbind.ioposts/2020-09-27-100-time-series-part-5_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>mp_obj &lt;- find_snippet(dataset, 168, 2, 24)
-mp_obj %T&gt;% plot</code></pre>
-<p><img src="/posts/2020-09-27-100-time-series-part-5_files/figure-html/tsmp-1.png" width="960" style="display: block; margin: auto;" /></p>
+mp_obj %T&gt;%
+    plot</code></pre>
+<p><img src="/franzbischoff.rbind.ioposts/2020-09-27-100-time-series-part-5_files/figure-html/tsmp-1.png" width="960" style="display: block; margin: auto;" /></p>
 <pre><code>## 
 ## Snippet
 ## -------

@@ -25,8 +25,10 @@ Now let's start:
 4. Is there any pattern that is common to these two time series?
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
-                      fig.align = "center", fig.width = 10)
+knitr::opts_chunk$set(
+  warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
+  fig.align = "center", fig.width = 10
+)
 ```
 
 Now we will see one of the most interesting and fast jobs that the Matrix Profile can do (there are more, for sure).
@@ -68,7 +70,6 @@ In this case, we will use the [SiMPle](https://sites.google.com/view/simple-fast
 dataset_queen <- dataset_queen[1:length(dataset_vanilla)]
 # and use the SiMPle algorithm. This algorithm is not optimized yet... so it takes more time.
 mp_obj <- simple_fast(cbind(dataset_queen, dataset_vanilla), window_size = 300, exclusion_zone = 1, verbose = 1)
-
 ```
 
 ```{r simple_plot, fig.height=8}

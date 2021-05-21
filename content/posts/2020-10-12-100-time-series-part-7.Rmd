@@ -28,8 +28,10 @@ Now let's start:
 7.  How do I quickly search this long dataset for patterns, if an approximate search is acceptable?
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
-                      fig.align = "center", fig.width = 10)
+knitr::opts_chunk$set(
+  warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
+  fig.align = "center", fig.width = 10
+)
 ```
 
 As shown in previous posts, the exact search is surprisingly fast under Euclidean Distance.
@@ -69,7 +71,6 @@ First, we will proceed as usual:
 ```{r full, fig.height=7}
 
 mp_obj <- tsmp(dataset, window_size = 168, n_workers = 4, verbose = 1)
-
 ```
 
 Search for motifs:
@@ -84,7 +85,6 @@ Now, using `PAA` of 8 (this means the dataset will be 8 times smaller than the o
 ```{r paa, fig.height=7}
 
 mp_obj_paa <- tsmp(dataset, window_size = 168, n_workers = 4, verbose = 1, paa = 8)
-
 ```
 
 Search for motifs:

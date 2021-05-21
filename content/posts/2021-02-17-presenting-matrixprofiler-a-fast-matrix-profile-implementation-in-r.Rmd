@@ -24,8 +24,10 @@ img {
 ```
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
-                      fig.align = "center", fig.width = 10)
+knitr::opts_chunk$set(
+  warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
+  fig.align = "center", fig.width = 10
+)
 ```
 
 It took some time, as you can see in the [previous post](https://franzbischoff.rbind.io/posts/tsmp-package-is-going-big), but the [`matrixprofiler`](https://cran.r-project.org/package=matrixprofiler) package is done!

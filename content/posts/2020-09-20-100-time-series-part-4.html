@@ -14,7 +14,7 @@ publishDate: '2020-09-20T12:00:00+01:00'
 mathjax: yes
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/franzbischoff.rbind.iormarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>In the <a href="/posts/100-time-series-part-3">last post</a> we’ve understood and find Discords in our data.</p>
@@ -41,7 +41,7 @@ par(mfrow = c(2, 1), cex = 0.8)
 plot(dataset_queen, main = &quot;Queen Song&quot;, lwd = 1, type = &quot;l&quot;, ylab = &quot;&quot;, xlim = c(0, 25000))
 plot(dataset_vanilla, main = &quot;Vanilla Ice Song&quot;, lwd = 1, type = &quot;l&quot;, ylab = &quot;&quot;, xlim = c(0, 
     25000))</code></pre>
-<p><img src="/posts/2020-09-20-100-time-series-part-4_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="/franzbischoff.rbind.ioposts/2020-09-20-100-time-series-part-4_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>par(def_par)  # and in the end, restore the configurations</code></pre>
 <p>Now, remember, know your data. These are sound data. More precisely, these are one of the <a href="https://en.wikipedia.org/wiki/Mel-frequency_cepstrum">MFCC</a> representation of these musics that allows us to better represent the sound.</p>
 <p>As you may (or not) remember, the <a href="https://www.cs.unm.edu/~mueen/FastestSimilaritySearch.html">MASS</a> algorithm normalizes the data by default, and this may be helpful to find patterns that are basically the same, but differ in amplitude, for example. Here, in this case, normalizing the data would basically mess up with our task! The reason is simple: you can have sequences of the same notes, but with a higher or lower pitch, so they are not the same.</p>
@@ -52,7 +52,7 @@ dataset_queen &lt;- dataset_queen[1:length(dataset_vanilla)]
 # time.
 mp_obj &lt;- simple_fast(cbind(dataset_queen, dataset_vanilla), window_size = 300, exclusion_zone = 1, 
     verbose = 1)</code></pre>
-<pre><code>## Finished in 21.27 secs</code></pre>
+<pre><code>## Finished in 25.61 secs</code></pre>
 <pre class="r"><code># and now let&#39;s plot all together:
 def_par &lt;- par(no.readonly = TRUE)  # always save the previous configuration
 par(mfrow = c(3, 1), cex = 0.8)
@@ -60,7 +60,7 @@ plot(dataset_queen, main = &quot;Queen Song&quot;, lwd = 1, type = &quot;l&quot;
 plot(dataset_vanilla, main = &quot;Vanilla Ice Song&quot;, lwd = 1, type = &quot;l&quot;, ylab = &quot;&quot;, xlim = c(0, 
     25000))
 plot(mp_obj$mp, main = &quot;Matrix Profile&quot;, lwd = 1, type = &quot;l&quot;, ylab = &quot;&quot;, xlim = c(0, 25000))</code></pre>
-<p><img src="/posts/2020-09-20-100-time-series-part-4_files/figure-html/simple_plot-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="/franzbischoff.rbind.ioposts/2020-09-20-100-time-series-part-4_files/figure-html/simple_plot-1.png" width="960" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>par(def_par)  # and in the end, restore the configurations</code></pre>
 <p>You can see that the lower parts of the Matrix Profile align well with that famous bassline from “Under Pressure” by Queen which was plagiarized by Vanilla Ice.</p>
 <p>So we did it again!</p>
