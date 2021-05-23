@@ -1,0 +1,124 @@
+---
+title: Using RStudio with Github Classroom
+author: Francisco Bischoff
+date: '2020-12-01'
+slug: using-rstudio-with-github-classroom
+categories:
+  - r-bloggers
+  - R
+  - Github
+  - Teaching
+tags: []
+publishDate: '2020-12-01T15:48:35Z'
+mathjax: yes
+editor_options:
+  markdown:
+    mode: markdown
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<style type="text/css">
+img {
+  display: block; margin-left: auto; margin-right: auto;
+}
+</style>
+<p>In <a href="https://tcrn.ch/3aSjWNY">March, 12th</a>, Github has launched the <a href="https://classroom.github.com/">Github Classroom</a> platform.</p>
+<p>TL; DR, you can continue.
+For the long story, click <a href="/posts/using-rstudio-with-github-classroom-long">here</a>.</p>
+<div id="classroom" class="section level2">
+<h2>Classroom</h2>
+<p>For those that want to know more about the capabilities of Github Classroom, I recommend you start <a href="https://classroom.github.com/help">here</a>.</p>
+</div>
+<div id="using-rstudio" class="section level2">
+<h2>Using RStudio</h2>
+<p>Why do we need this tutorial?
+Well, Github Classroom already allows an auto-integration with <a href="https://www.microsoft.com/en-us/makecode">Microsoft MakeCode</a> and <a href="https://repl.it/">Repl.it</a>, but we, as R developers, like RStudio, right?
+So how to solve this?</p>
+<p>The current solution uses <a href="https://mybinder.org/">mybinder.org</a> as the cloud service that will create our RStudio session.
+If someone finds out how to use RStudio Cloud automatically, please, send me a message.
+I’m looking forward to using that.</p>
+<div id="step-1---create-your-environment" class="section level3">
+<h3>Step 1 - Create your environment</h3>
+<p>First, you need to create a repository that will contain the RStudio session settings.
+That is the best way to do it because if you do not separate the assignment code from the IDE code, every student will have to <strong>build</strong> its own docker every time they push something new to their assignment.
+<strong>This takes time!</strong></p>
+<p>Here I published a template repository where you can derive your configurations:</p>
+<p><a href="https://github.com/franzbischoff/rstudio_mybinder_env">RStudio MyBinder Environment</a></p>
+<p><strong>Changes you need to make</strong></p>
+<ul>
+<li>In file <code>.rstudio/projects/settings/last-project-path</code>, you need to change the values there to your own. Leave the <code>/home/jovyan/</code> there.</li>
+</ul>
+<p><strong>Changes you may want to make</strong></p>
+<ul>
+<li>In file <code>.binder/install.R</code>, you specify the packages that will be installed by default in the environment.</li>
+</ul>
+</div>
+<div id="step-2---create-the-assignment-repository" class="section level3">
+<h3>Step 2 - Create the assignment repository</h3>
+<p>There are some requirements to make this work:</p>
+<ul>
+<li><p>The repository must have a .RProj file (e.g., Assignment.Rproj).
+And this name must be the same you set in Step 1 (in last-project-path).
+For now, this is a requirement.</p></li>
+<li><p>You must have a <code>README.md</code> with the following link (adapted from the generated URL from <a href="https://jupyterhub.github.io/nbgitpuller/link?tab=binder">nbgitpuller link generator</a>):</p></li>
+</ul>
+<pre class="html"><code>&lt;a href=&quot;https://mybinder.org/v2/gh/YOUR_USERNAME/YOUR_FORK/main?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252F${REPOSITORY_ACCOUNT}%252F${REPOSITORY_SLUG}%26targetPath%3DYOUR_CLASSROOM%26urlpath%3Drstudio%252F%26branch%3Dmain&quot;&gt;
+  &lt;img src=&quot;https://mybinder.org/badge_logo.svg&quot; alt=&quot;Launch Binder&quot;/&gt;
+&lt;/a&gt;</code></pre>
+<ul>
+<li><p><strong>Pay attention</strong> to the strings you must set: <code>YOUR_USERNAME</code>, <code>YOUR_FORK</code>, <code>YOUR_CLASSROOM</code>.</p>
+<p>Also <strong>pay attention</strong> that recently, Github is changing the default repository from <code>master</code> to <code>main</code>.</p>
+<p>The variables <code>${REPOSITORY_SLUG}</code> are variables that will be automatically replaced by a Github action.
+Explained in the <a href="using-rstudio-with-github-classroom-long">long story post</a>.</p>
+<p>If you generate the <code>README.md</code> from an Rmd file, it is really recommended that you use the plain HTML above since <code>knitr</code> or something else seems to recode the URL, and I could not find a way to disable that.</p></li>
+<li><p>Create a workflow at <code>.github/workflows/configure_readme.yml</code> with the following Github action: <a href="https://github.com/marketplace/actions/replace_envs"><strong>replace_envs</strong></a>.
+And, to avoid this action runs in your template, but in student’s fork, add this line before <code>steps</code>:</p></li>
+</ul>
+<pre class="yaml"><code>if: contains(github.event.head_commit.message, &#39;Classroom&#39;)</code></pre>
+</div>
+<div id="step-3---the-autograding" class="section level3">
+<h3>Step 3 - The autograding</h3>
+<p>Github Classroom has an option to create an automatic grading, so the students can push answers for solving the assessment, and the system will automatically verify if it is right.</p>
+<p>That is not fancy stuff;<strong>you</strong> have to define what is right or wrong and how much.</p>
+<p>I’ve tried to leave my files in the template repository, but Github Classroom will currently overwrite them when the student accepts the task.</p>
+<p>So, how I’m doing currently:</p>
+<ul>
+<li><p>Create a <code>test.R</code> file, and use your skills to assess the student’s answer.
+My lazy approach makes the student save a file called <code>output.rda</code> containing the variable <code>answer</code>, and my script loads the <code>output.rda</code> file and compares the SHA1 of the <code>answer</code> with the right answer.
+Use <code>quit(status = 0)</code> and <code>quit(status = 1)</code> to tell the system that the answer is ok or not.</p></li>
+<li><p>Create a <code>test.sh</code> file that calls the <code>test.R</code> file.
+This script can handle several R scripts separately if you want to test for several answers and make partial grading, for example.
+Just use a bash script like:</p></li>
+</ul>
+<pre class="bash"><code>echo &quot;Running tests...&quot;
+
+if Rscript --vanilla .assets/scripts/test.R ; then
+ echo &quot;Pass: Program exited zero&quot;
+else
+ echo &quot;Fail: Program did not exit zero&quot;
+ exit 1
+fi
+
+echo &quot;All tests passed.&quot;
+
+exit 0</code></pre>
+<ul>
+<li><p>Finally, when you create the auto-grading in your assignment, choose the options:</p>
+<ul>
+<li><p>Repository: <code>Public</code>.
+That is a limitation (for now) since <code>nbgitpuller</code> doesn’t have access to private repositories.
+That may be a problem for countries that require that student assignments must be private.</p></li>
+<li><p>Online IDE: <code>Don't use an online IDE</code>.</p></li>
+<li><p>Add test: <code>Run Command</code>.</p>
+<p>In this option, set as <code>setup</code>:</p>
+<p><code>sudo apt-get update; sudo apt-get remove -y r-base r-base-core; sudo apt-get install -y r-base r-base-core r-cran-digest</code> (this removes and installs again the <code>R</code> in the test environment, because if you use the one it is there, some important packages as <code>r-cran-ggplot2</code> will fail to install. Additionally, I install the <code>r-cran-digest</code> package that has the SHA1 algorithm.)</p>
+<p>and as <code>run</code>:</p>
+<p><code>bash .assets/scripts/test.sh</code></p></li>
+</ul></li>
+</ul>
+<p>I hope this post can save some academic lives, or at least save some time, and maybe get some Github’s or RStudio’s attention to this matter.</p>
+<p>Any comment is welcome.</p>
+</div>
+</div>

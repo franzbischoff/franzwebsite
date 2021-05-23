@@ -1,0 +1,100 @@
+---
+title: 100 Time Series Data Mining Questions (with answers!) - Part 1
+author: Francisco Bischoff
+date: '2020-09-01'
+categories:
+  - datamining
+  - R
+  - r-bloggers
+  - timeseries
+  - tsmp
+slug: 100-time-series-part-1
+mathjax: yes
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>I decided to start this series of Time Series Data Mining base on Eamonn’s presentation, so that’s why the title is “100”. That’s the idea, but for now, we only have 19 questions ready to go.</p>
+<p>I’ll use the datasets available at <a href="https://github.com/matrix-profile-foundation/mpf-datasets" class="uri">https://github.com/matrix-profile-foundation/mpf-datasets</a> so you can try this at home.</p>
+<p>The original code (MATLAB) and data are <a href="https://www.cs.ucr.edu/~eamonn/HundredQuestions.zip">here</a>..</p>
+<p>So, let’s start with number one:</p>
+<ol style="list-style-type: decimal">
+<li>Have we ever seen a pattern that looks just like this?</li>
+</ol>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/pattern-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>The dataset comes from an accelerometer that records when a person is walking, jogging, or running.</p>
+<p>First, let’s load the <code>tsmp</code> library and import our dataset:</p>
+<pre class="r"><code># install.packages(&#39;tsmp&#39;)
+
+library(tsmp)
+
+baseurl &lt;- &quot;https://raw.githubusercontent.com/matrix-profile-foundation/mpf-datasets/a3a3c08a490dd0df29e64cb45dbb355855f4bcb2/&quot;
+dataset &lt;- unlist(read.csv(paste0(baseurl, &quot;real/walk-jog-run.txt&quot;), header = FALSE), use.names = FALSE)</code></pre>
+<p>And plot it:</p>
+<pre class="r"><code>plot(dataset, main = &quot;Dataset&quot;, type = &quot;l&quot;, ylab = &quot;&quot;, xlab = &quot;time&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>This task is trivial with <a href="https://www.cs.unm.edu/~mueen/FastestSimilaritySearch.html">Mueen’s MASS</a> code…</p>
+<p>Here is where <code>tsmp</code> does all for you. All you need is to use the function <code>dist_profile</code> that will return an especial vector called “Distance Profile”. We will talk more about it later in this sequence of posts. This vector is inside the <code>list</code> that is returned by this function:</p>
+<pre class="r"><code>query &lt;- dataset[5001:5100]  # pretend you didn&#39;t see this line. This is the query from the first image above.
+
+# our query has a length of 100 units, we can specify this as `window_size`, but here the
+# function will know it.
+tictac1 &lt;- Sys.time()
+res &lt;- dist_profile(dataset, query)
+tictac1 &lt;- Sys.time() - tictac1
+
+cat(paste(&quot;dist_profile() finished in &quot;, tictac1, &quot;seconds\n\n&quot;))</code></pre>
+<pre><code>## dist_profile() finished in  0.00799798965454102 seconds</code></pre>
+<pre class="r"><code>str(res)</code></pre>
+<pre><code>## List of 3
+##  $ distance_profile: num [1:9902] 188 180 174 170 168 ...
+##  $ last_product    : num [1:9902] 15.4 21.1 25.7 28.5 29.6 ...
+##  $ par             :List of 9
+##   ..$ window_size: int 100
+##   ..$ data_fft   : cplx [1:16384] 5920+0i -1833-2644i 993-317i ...
+##   ..$ data_size  : int 10001
+##   ..$ data_mean  : num [1:9902] 0.1029 0.1017 0.101 0.1 0.0994 ...
+##   ..$ data_sd    : num [1:9902] 0.4 0.401 0.401 0.401 0.402 ...
+##   ..$ query_mean : num 0.602
+##   ..$ query_sd   : num 3.73
+##   ..$ data       : num [1:10001] 0.01499 -0.04329 -0.00391 -0.03841 0.00122 ...
+##   ..$ k          : NULL</code></pre>
+<p>What this vector represents is the euclidean distance of our query (the pattern that we want to look for) related to the dataset. This means that the minimum value contains the place that is most similar to our query:</p>
+<pre class="r"><code>first &lt;- which.min(res$distance_profile)
+
+first  # surprisingly (not) the value is the same as that we used to slice our query...</code></pre>
+<pre><code>## [1] 5001</code></pre>
+<p>Well, this tells us that at position 5001 there is a pattern that looks like our query. Let’s plot that with a closer look:</p>
+<pre class="r"><code>plot(dataset, main = &quot;Dataset&quot;, type = &quot;l&quot;, ylab = &quot;&quot;, xlab = &quot;time&quot;, xlim = c(4001, 6000))
+lines(5001:5100, query, col = 2)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Yes! There is a match! But there are more similar patterns? Here I just find that a new helper function could exist. As it doesn’t, let’s write a few lines (read the comments!):</p>
+<pre class="r"><code># This snippet will try to find what we call neighbours, that are patterns that are similar
+# to your query, but not the best match.  We know that &#39;Trivial Matches&#39; happens close to
+# the best match, but in this case we are not looking for motifs, but for neighbours. This
+# will make sense in the future.
+
+tictac2 &lt;- Sys.time()
+st &lt;- sort(res$distance_profile, index.return = TRUE)  # this will order the results and give us the position of them
+tictac2 &lt;- Sys.time() - tictac2
+
+cat(paste(&quot;sort() finished in &quot;, tictac2, &quot;seconds\n\n&quot;))</code></pre>
+<pre><code>## sort() finished in  0.0019989013671875 seconds</code></pre>
+<pre class="r"><code># the first one we know already is our best match. Let&#39;s now plot the results of three more
+# &#39;matches&#39;.
+
+# Remember that our `window_size` is 100:
+w &lt;- 100
+
+plot(dataset, main = &quot;Dataset&quot;, type = &quot;l&quot;, ylab = &quot;&quot;, xlab = &quot;time&quot;, xlim = c(4500, 6200))
+
+for (i in 1:5) {
+    lines(st$ix[i]:(st$ix[i] + w - 1), dataset[st$ix[i]:(st$ix[i] + w - 1)], col = i + 1, lwd = 2)
+    text(st$ix[i], -10, label = paste(&quot;match&quot;, i), adj = 0, col = i + 1, cex = 0.8)
+}</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>So we did it! We found the five best matches of our query, and it took only 0.00999689102172852 seconds to do it!</p>
+<p>This ends our first question of one hundred (let’s hope so!).</p>
+<p>Until next time.</p>
+<p><a href="/posts/100-time-series-part-2">next post in this series</a></p>

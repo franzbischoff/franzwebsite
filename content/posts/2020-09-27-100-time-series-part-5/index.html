@@ -1,0 +1,61 @@
+---
+title: 100 Time Series Data Mining Questions - Part 5
+author: Francisco Bischoff
+date: '2020-09-27'
+categories:
+  - datamining
+  - R
+  - r-bloggers
+  - timeseries
+  - tsmp
+slug: 100-time-series-part-5
+publishDate: '2020-09-28T12:00:00+01:00'
+mathjax: yes
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>In the <a href="/posts/100-time-series-part-4">last post</a> we managed to find similar patterns between two time series.</p>
+<p>For the next question, we will still be using the datasets available at <a href="https://github.com/matrix-profile-foundation/mpf-datasets" class="uri">https://github.com/matrix-profile-foundation/mpf-datasets</a> so you can try this at home.</p>
+<p>The original code (MATLAB) and data are <a href="https://www.cs.ucr.edu/~eamonn/HundredQuestions.zip">here</a>.</p>
+<p>Now let’s start:</p>
+<ol start="5" style="list-style-type: decimal">
+<li>If you had to summarize this long time series with just two shorter examples, what would they be?</li>
+</ol>
+<p>This is a new kind of question. It’s about summarization, not actually finding motifs.</p>
+<p>This task could be addressed using another distance measurement that is more robust than the simple Euclidean distance, but a little bit slower, of course. In fact, this kind of measurement distance can defeat even the <a href="https://en.wikipedia.org/wiki/Dynamic_time_warping">DTW</a> based algorithms for this task. It is called <a href="https://ieeexplore.ieee.org/document/8594928/">MPDist</a>, and the simplest way I can think of explaining it, is: instead of comparing a window of data with the dataset, we compare a shorter rolling window, inside the main rolling window.</p>
+<p>This can solve this kind of clustering problem for example:</p>
+<center>
+<p><img src="/posts/2020-09-27-100-time-series-part-5_files/mpdist_cluster.png" style="width:80.0%" /><br />
+<small>Image from Gharghabi S. et al., 2018.</small></p>
+</center>
+<p>The dataset is 3 years of Italian power demand data which represents the hourly electrical power demand of a small Italian city for 3 years beginning on Jan 1st 1995 and ending on May 31th 1998. What we want here is to summarize this dataset, showing “Snippets” of data. Snippets are representative patterns present in the data, not rare events like discords, neither (almost) perfectly similar as motifs.</p>
+<p>First, let’s load the <code>tsmp</code> library and import our dataset:</p>
+<pre class="r"><code># install.packages(&#39;tsmp&#39;)
+
+library(tsmp)
+
+baseurl &lt;- &quot;https://raw.githubusercontent.com/matrix-profile-foundation/mpf-datasets/05efe885cff4b2266067ad62c4f6fa2b537ad2a2/&quot;
+dataset &lt;- read.csv(paste0(baseurl, &quot;real/italianpowerdemand.csv&quot;), header = FALSE)$V1</code></pre>
+<p>And plot it as always:</p>
+<pre class="r"><code>plot(dataset, lwd = 1, type = &quot;l&quot;, main = &quot;Italian Power Demand&quot;, ylab = &quot;kWh&quot;, xlab = &quot;time (hourly)&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mp_obj &lt;- find_snippet(dataset, 168, 2, 24)
+mp_obj %T&gt;%
+    plot</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/tsmp-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>## 
+## Snippet
+## -------
+## Snippets found = 2 
+## Snippets indexes = 10921 17977 
+## Snippets fractions = 64.25% 35.75% 
+## Snippet size = 168</code></pre>
+<p>We searched for the top-2 snippets of length 168. This is equivalent to 1 week (7 days). You can see that this way since Jan 1st 1995 is a Sunday, we can confirm that the indexes of each snippet also starts on Sunday (10921 %% 168 is 1 and 17977 %% 168 is also 1). This makes the interpretation easier.</p>
+<p>We also obtain the “regime bar,” that tells us which snippet “explains” which region of data. As it happens, These snippets seem to represent summer (red) and winter (green) regimes, respectively. The red line usually stars in later February - early March and ends on October (almost the same period of Daylight Saving Time changes).</p>
+<p>Let’s look at the snippets. What makes them different from each other? We see that the “summer” snippet has a lower peak at the end of the day, while the “winter” snippet has a higher peak. This could mean that in the winter, people go home and turn on heaters (for example), and in the summer, people may go home later and doesn’t turn on heaters. This is just a hypothesis, but see that the algorithm gave us the answer: how can I summarize this dataset?</p>
+<p>So we did it again!</p>
+<p>This ends our fifth question of one hundred (let’s hope so!).</p>
+<p>Until next time.</p>
+<p><a href="/posts/100-time-series-part-4">previous post in this series</a> – <a href="/posts/100-time-series-part-6">next post in this series</a></p>

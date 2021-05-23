@@ -1,0 +1,25 @@
+---
+title: tsmp is going big!
+author: Francisco Bischoff
+date: '2020-08-29'
+categories:
+  - r-bloggers
+  - R
+  - tsmp
+tags:
+  - R
+slug: tsmp-package-is-going-big
+mathjax: yes
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Since the beginning of the <code>tsmp</code> package, it was evident that a series of algorithms around the Matrix Profile would pop-up sooner or later.</p>
+<p>After the creation of the Matrix Profile Foundation <a href="https://matrixprofile.org/">(MPF)</a>, the <code>tsmp</code> package had doubled the number of monthly downloads, and that is a good thing!</p>
+<p>The current version of <code>tsmp</code>, as shown in the <a href="https://franzbischoff.rbind.io/posts/introducing-the-matrix-profile-api/">previous post</a> had added the new Pan-Matrix Profile and introduced the Matrix Profile API that aims to standardize high-level tools across multiple programming languages.</p>
+<p>Now my focus will be on speed and robustness of the package. Currently I can say that the speed improvement is 25% for STAMP and STOMP.</p>
+<p>The <code>tsmp</code> package will keep the current structure, but the “core” algorithms will be moved to a new dependency package called <code>matrixprofiler</code>.</p>
+<p>This package will be specialized on low-level (Rcpp) implementation of MASS, STAMP, STOMP, etc. This will let the <code>tsmp</code> more flexible implement algorithms that use the Matrix Profile as the base for the application tasks as “motif search”, “snippet search”, or other algorithms that may appear.</p>
+<p><code>matrixprofiler</code> will tend to be less updated and very stable. Those who just want the basics, will get to work with this package alone, but it is safer to install the <code>tsmp</code> and have the former as dependency.</p>
+<p>Stay tuned for the first release.</p>

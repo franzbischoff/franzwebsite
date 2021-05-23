@@ -1,0 +1,74 @@
+# nolint start
+source("renv/activate.R")
+
+if (Sys.getenv("CI") == "") { # not CI
+
+  suppressMessages(if (requireNamespace("languageserver")) {
+    a <- try(suppressWarnings(source(file.path(
+      Sys.getenv(if (.Platform$OS.type == "windows") {
+        "USERPROFILE"
+      } else {
+        "HOME"
+      }),
+      ".vscode-R",
+      "init.R"
+    ))),
+    silent = TRUE
+    )
+
+    rm(a)
+  })
+
+  if (interactive()) {
+    options(
+      warnPartialMatchArgs = FALSE,
+      warnPartialMatchDollar = FALSE,
+      warnPartialMatchAttr = FALSE,
+      usethis.protocol = "https",
+      vsc.rstudioapi = TRUE
+      # error = recover
+    )
+
+    suppressMessages(
+      suppressWarnings({
+        require("testthat", quietly = TRUE)
+        require("devtools", quietly = TRUE)
+        require("usethis", quietly = TRUE)
+        require("conflicted", quietly = TRUE)
+        require("here", quietly = TRUE)
+      })
+    )
+    # suppressMessages(prettycode::prettycode())
+
+    if (suppressMessages(requireNamespace("prompt", quietly = TRUE))) {
+      prompt::set_prompt(function(...) {
+        paste0(
+          "[",
+          prompt::git_branch(),
+          prompt::git_dirty(),
+          prompt::git_arrows(),
+          "] ",
+          prompt::prompt_runtime()
+        )
+      })
+    }
+  }
+} else { # is CI
+  message("Running .RProfile in CI")
+}
+
+options(
+  blogdown.generator = "hugo",
+  # blogdown.hugo.server = c('-D', '-F', '--navigateToChanged'),
+  blogdown.server.verbose = TRUE,
+  blogdown.subdir = "posts",
+  blogdown.ext = ".Rmd",
+  blogdown.hugo.version = "0.83.1",
+  blogdown.knit.on_save = TRUE,
+  blogdown.serve_site.startup = TRUE,
+  blogdown.author = "Francisco Bischoff"
+)
+
+library(blogdown)
+
+# nolint end

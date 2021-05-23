@@ -1,0 +1,99 @@
+---
+title: 100 Time Series Data Mining Questions - Part 6
+author: Francisco Bischoff
+date: '2020-10-06'
+categories:
+  - datamining
+  - R
+  - r-bloggers
+  - timeseries
+  - tsmp
+slug: 100-time-series-part-6
+publishDate: '2020-09-28T12:00:00+01:00'
+mathjax: yes
+editor_options:
+  markdown:
+    mode: markdown
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>In the <a href="/posts/100-time-series-part-5">last post</a> took a very long time series, and we summarize it.
+Now we will do something that seems related when we look at the regime bar: regime change detection.</p>
+<p>For the next question, we will still be using the datasets available at <a href="https://github.com/matrix-profile-foundation/mpf-datasets" class="uri">https://github.com/matrix-profile-foundation/mpf-datasets</a> so you can try this at home.</p>
+<p>The original code (MATLAB) and data are <a href="https://www.cs.ucr.edu/~eamonn/HundredQuestions.zip">here</a>.</p>
+<p>Now let’s start:</p>
+<ol start="6" style="list-style-type: decimal">
+<li>When does the regime change in this time series?</li>
+</ol>
+<p>This task exploits another interesting characteristic of Matrix Profile.
+We know that each position in the Profile Index points to its nearest neighbor.
+Let’s imagine all these connections as “arcs,” and we will see something interesting: in some regions, it looks like several arcs are pointing to that place.
+Why’s that?</p>
+<p>Imagine, if there is a change in the regime in that time series, we can infer that the nearest neighbor of the previous pattern will not be in the new pattern.
+It is logical to think that these arcs will tend to be grouped inside each regime region.</p>
+<p>Then, how to deal with this feature?
+Arc counts.
+Take any point in the time series, and count how many arcs are passing thru that point.
+The fewer arcs, the greater is the probability that we are changing regimes.</p>
+<p>Let’s look to the plot below, where we plot the arcs (not all of them), and in the middle, we see the ‘arc count.’ There we see that there are two valleys, and they match almost precisely where the data changes pattern.</p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Well, I think I’ve already spoiled all the fun.
+But, let’s do all the steps anyway:</p>
+<p>First, let’s load the <code>tsmp</code> library and import our dataset:</p>
+<pre class="r"><code># install.packages(&#39;tsmp&#39;)
+
+library(tsmp)
+
+baseurl &lt;- &quot;https://raw.githubusercontent.com/matrix-profile-foundation/mpf-datasets/4d99d1bee9b36ca552aa75631748825eda0c064c/&quot;
+dataset &lt;- read.csv(paste0(baseurl, &quot;real/PigInternalBleedingDatasetArtPressureFluidFilled_100_7501.txt&quot;), 
+    header = FALSE)$V1</code></pre>
+<p>And plot it as always:</p>
+<pre class="r"><code>plot(dataset, lwd = 1, type = &quot;l&quot;, main = &quot;Pig Internal Bleeding&quot;, ylab = &quot;ABP (mmHg)&quot;, xlab = &quot;time&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>This is not the same dataset from the first figure.
+This dataset changes only once because it has registered the arterial blood pressure of a pig before and after some bleeding.
+Well, we can imagine that there will be a regime change.
+So let’s find it quickly.</p>
+<p>Here is the code:</p>
+<pre class="r"><code># I&#39;ll do this in steps, first compute the matrix profile
+mp_obj &lt;- tsmp(dataset, window_size = 100, n_workers = 4, verbose = 0)
+
+# The matrix profile doesn&#39;t need to be recomputed, we can apply any mining function on top
+# of it, and is fast!
+tic &lt;- Sys.time()
+mp_obj %&gt;%
+    fluss(num_segments = 1) %T&gt;%
+    plot</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/tsmp-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>## Matrix Profile
+## --------------
+## Profile size = 14874 
+## Window size = 100 
+## Exclusion zone = 50 
+## Contains 1 set of data with 14973 observations and 1 dimension 
+## 
+## Arc Count
+## ---------
+## Profile size = 14874 
+## Minimum normalized count = 0.25 at index 7460 
+## 
+## Fluss
+## -----
+## Segments = 1 
+## Segmentation indexes = 7460</code></pre>
+<pre class="r"><code>toc &lt;- Sys.time() - tic
+cat(&quot;\nFinished in&quot;, toc, &quot;seconds\n&quot;)</code></pre>
+<pre><code>## 
+## Finished in 0.1680119 seconds</code></pre>
+<p>We can barely see in the dataset where is the regime change, but I tell you that it is at timestamp 7500-&gt;7501.</p>
+<p>We used a window size of 100 because it is approximately the length of one period of arterial pressure (or the period of whatever repeated patterns you have in your data); however, up to half or twice that value would work just as well.
+Then the <code>fluss()</code> function managed to extract where was located the minimum arc count, at 7460 (that is incredible near the truth; it is in the middle of the rolling window).</p>
+<p>To finalize, see that we set <code>num_segments</code> to <code>1</code>.
+This is the only parameter we should care about here.
+That informs the algorithm of how many changes it needs to look for.</p>
+<p>So we did it again!</p>
+<p>This ends our sixth question of one hundred (let’s hope so!).</p>
+<p>Until next time.</p>
+<p><a href="/posts/100-time-series-part-5">previous post in this series</a> – <a href="/posts/100-time-series-part-7">next post in this series</a></p>

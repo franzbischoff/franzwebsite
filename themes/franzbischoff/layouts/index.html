@@ -20,11 +20,13 @@
     </ul>
     <div style="padding-top: 5ex;"></div>
     <h2>Blogroll</h2>
-      <ul class="fa-ul">
-	{{ range $.Site.Params.blogroll }}
-	<li><i class="fa-li {{ .icon_pack }} {{ .icon_pack}}-{{ .icon }}" style="color:#036c38;font-size:80%;padding-top:6px;"></i><a href="{{ .link }}">{{ .text }}</a>{{ if .site}} on {{ .site }}{{ end }}</li>
-	{{ end }}
-      </ul>
+    <ul class="fa-ul">
+      {{ range $.Site.Params.blogroll }}
+      <li><i class="fa-li {{ .icon_pack }} {{ .icon_pack}}-{{ .icon }}"
+          style="color:#036c38;font-size:80%;padding-top:6px;"></i><a href="{{ .link }}">{{ .text }}</a>{{ if .site}} on
+        {{ .site }}{{ end }}</li>
+      {{ end }}
+    </ul>
   </div>
 </div>
 
@@ -33,7 +35,10 @@
   tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
   });
 </script>
-<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML">
+<script type="text/javascript" async
+src="https://{{.Site.Params.MathJaxCDN}}/{{.Site.Params.MathJaxVersion}}/es5/tex-mml-chtml.min.js"
+integrity="{{.Site.Params.MathJaxIntegrity}}"
+crossorigin="anonymous">
 </script>
 
 {{ end }}
