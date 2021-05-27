@@ -3,21 +3,23 @@ source("renv/activate.R")
 
 if (Sys.getenv("CI") == "") { # not CI
 
-  suppressMessages(if (requireNamespace("languageserver")) {
-    a <- try(suppressWarnings(source(file.path(
-      Sys.getenv(if (.Platform$OS.type == "windows") {
-        "USERPROFILE"
-      } else {
-        "HOME"
-      }),
-      ".vscode-R",
-      "init.R"
-    ))),
-    silent = TRUE
-    )
+  if (Sys.getenv("RSTUDIO") == "") {
+    suppressMessages(if (requireNamespace("languageserver")) {
+      a <- try(suppressWarnings(source(file.path(
+        Sys.getenv(if (.Platform$OS.type == "windows") {
+          "USERPROFILE"
+        } else {
+          "HOME"
+        }),
+        ".vscode-R",
+        "init.R"
+      ))),
+      silent = TRUE
+      )
 
-    rm(a)
-  })
+      rm(a)
+    })
+  }
 
   if (interactive()) {
     options(
@@ -69,8 +71,8 @@ options(
   blogdown.hugo.version = "0.83.1",
   # blogdown.initial_files = NA,
   blogdown.insertimage.usebaseurl = FALSE, # RBloggers, https://github.com/rstudio/blogdown/blob/5aeb809c68cfa1a9e616bc9ed9878c3ea5d05300/NEWS.md#new-features-13
-  blogdown.knit.on_save = TRUE,
-  blogdown.knit.serve_site = FALSE,
+  blogdown.knit.on_save = FALSE,
+  blogdown.knit.serve_site = TRUE,
   # blogdown.markdown.format = c("gfm", "+footnotes", "+tex_math_dollars", "+smart"),
   blogdown.method = "html", # The building method for R Markdown
   blogdown.rename_file = TRUE, # Rename file if the date is changed (metadata)

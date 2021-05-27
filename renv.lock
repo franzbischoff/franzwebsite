@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.0.5",
+    "Version": "4.1.0",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -15,6 +15,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "e4c04affc2cac20c8fec18385cd14691"
+    },
+    "MASS": {
+      "Package": "MASS",
+      "Version": "7.3-54",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "0e59129db205112e3963904db67fd0dc"
     },
     "R6": {
       "Package": "R6",
@@ -295,6 +302,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "4ab2c43adb4d4699cf3690acd378d75d"
+    },
+    "prompt": {
+      "Package": "prompt",
+      "Version": "1.0.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "f848531dd8aef16dcf52702aa1af5b1c"
     },
     "readr": {
       "Package": "readr",
