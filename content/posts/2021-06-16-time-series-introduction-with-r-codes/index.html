@@ -1,25 +1,30 @@
 ---
 title: Time Series Introduction with R codes
 author: Francisco Bischoff
-date: '2021-05-21'
-slug: time-series-introduction-with-r-codes
+date: '2021-06-16'
 categories:
-  - timeseries
   - R
   - r-bloggers
+  - timeseries
 tags:
   - R
+slug: time-series-introduction-with-r-codes
 bibliography: references.yaml
 csl: springer-lncs.csl
-mathjax: true
-output: blogdown::html_page
+mathjax: yes
+editor_options:
+  markdown:
+    mode: markdown
+output:
+  blogdown::html_page:
+    number_sections: yes
 ---
 
 <script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
 
 
-<div id="what-is-a-time-series" class="section level1">
-<h1>What is a Time Series</h1>
+<div id="what-is-a-time-series" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> What is a Time Series</h1>
 <ul>
 <li><p>A set of observed values ordered in time, or we can say, repeated measurement of something usually with the same fixed interval of time (hourly, weekly, monthly).</p></li>
 <li><p>A collection of observations made sequentially in time<span class="citation">[<a href="#ref-chatfield1996" role="doc-biblioref">1</a>]</span>.</p></li>
@@ -37,29 +42,40 @@ However, the exact prediction is usually impossible since past values determine 
 In this case, we say the process is stochastic, and the future values must be seen as a probability conditioned on the past values.</p>
 <p>There are many models available to describe the behavior of a particular series.
 The choice of such a model depends on factors such as the behavior of the phenomenon or the prior knowledge of its nature and the purpose of the analysis.</p>
-<div id="types-of-time-series" class="section level2">
-<h2>Types of Time Series</h2>
+<div id="types-of-time-series" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Types of Time Series</h2>
+<p>The R base installation already gives us lots of datasets to work on time-series.
+For this article I’ll first load the <code>MASS</code> package that contains some of the dataset we will use.
+We can list all datasets available with the function <code>data()</code> from package <code>utils</code>.</p>
+<pre class="r"><code>library(MASS)
+
+data() # the output is not shown, but you can check in your RStudio</code></pre>
 <ol style="list-style-type: decimal">
 <li><p>Measured at regular time intervals (discrete), examples:</p>
 <ul>
 <li>Economic: stock market;</li>
 </ul>
+<pre class="r"><code>plot(EuStockMarkets[, 1], main = &quot;Daily closing prices of DAX&quot;, ylab = &quot;Price&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/type_economic-1.png" width="700" style="display: block; margin: auto;" /></p>
 <ul>
 <li>Physical/Biological: Pluviometry, DNA;</li>
 </ul>
+<pre class="r"><code>plot(((nhtemp) - 32) * 5 / 9, main = &quot;*Average* Yearly Temperatures in New Haven&quot;, ylab = &quot;Temperature in  ºC&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/type_physical-1.png" width="700" style="display: block; margin: auto;" /></p>
 <ul>
 <li>Marketing: sales per month;</li>
 </ul>
+<pre class="r"><code>plot(BJsales, main = &quot;Daily Sales Data (150 days)&quot;, ylab = &quot;Sales&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/type_marketing-1.png" width="700" style="display: block; margin: auto;" /></p>
 <ul>
 <li>Demographics: population per year, car accidents per day;</li>
 </ul>
+<pre class="r"><code>plot(austres, main = &quot;Quarterly Time Series of the Number of Australian Residents&quot;, ylab = &quot;Residents&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/type_demographics-1.png" width="700" style="display: block; margin: auto;" /></p>
 <ul>
 <li>Process control: factory measurements like final can weights, quality scores;</li>
 </ul>
+<pre class="r"><code>knitr::include_graphics(&quot;control_chart.png&quot;) # here I borrowed an image, sorry.</code></pre>
 <p><img src="control_chart.png" style="display: block; margin: auto;" /></p>
 <div style="font-size:70%;text-align:center">
 <p>image from package <code>qicharts</code></p>
@@ -68,6 +84,10 @@ The choice of such a model depends on factors such as the behavior of the phenom
 <ul>
 <li>Point processes: earthquakes (events)</li>
 </ul>
+<pre class="r"><code>eq_data &lt;- readr::read_csv(&quot;https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.csv&quot;)
+eq_data$yes &lt;- 0
+plot(eq_data$time, eq_data$yes, main = &quot;USGS Magnitude 2.5+ Earthquakes, Past Day&quot;,
+     ylab = &quot;Event&quot;, xlab = &quot;Time of the day&quot;, yaxt = &#39;n&#39;, sub = paste(&quot;Data from &quot;, Sys.Date()))</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/type_earthquakes-1.png" width="700" style="display: block; margin: auto;" /></p>
 <div style="font-size:70%;text-align:center">
 <p>Data downloaded from <a href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.csv">usgs.gov</a></p>
@@ -76,10 +96,18 @@ The choice of such a model depends on factors such as the behavior of the phenom
 <ul>
 <li>Binary processes: communication theory (turn-on/turn-off, zeros and ones);</li>
 </ul>
+<pre class="r"><code>set.seed(2114)
+binary_data &lt;- unlist(replicate(10, rep(runif(1) &lt; 0.5, floor(runif(1, 10, 20)))))
+binary_data &lt;- stepfun(seq_len(length(binary_data) - 1), binary_data)
+plot(binary_data, main = &quot;Syntetic binary example&quot;, ylim = c(0,1),
+     ylab = &quot;Value&quot;, xlab = &quot;Continuous time&quot;, do.points = FALSE, yaxp = c(0, 1, 1))</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/type_binary-1.png" width="700" style="display: block; margin: auto;" /></p>
 <ul>
 <li>Analog signals: sound, temperature, humidity, ECG<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</li>
 </ul>
+<pre class="r"><code>ecg_example &lt;- readr::read_csv(&quot;ecg_example.csv&quot;) # this data you can find on physionet
+plot.ts(ecg_example, main = &quot;ECG example&quot;, ylim = c(-4, 7), yaxp = c(-2, 4, 3),
+     ylab = &quot;Value&quot;, xlab = &quot;Continuous time (ms)&quot;, xlim = c(0, 1000))</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/type_ecg-1.png" width="700" style="display: block; margin: auto;" /></p>
 <div style="font-size:70%;text-align:center">
 <p>Data from <a href="https://www.physionet.org/content/challenge-2015/1.0.0/">Physionet</a>, record <code>a103l</code></p>
@@ -87,94 +115,157 @@ The choice of such a model depends on factors such as the behavior of the phenom
 </ol>
 </div>
 </div>
-<div id="the-goals-of-time-series-analysis" class="section level1">
-<h1>The goals of Time Series Analysis</h1>
-<div id="description" class="section level2">
-<h2>Description</h2>
+<div id="the-goals-of-time-series-analysis" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> The goals of Time Series Analysis</h1>
+<div id="description" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Description</h2>
 <p>Like any kind of data analysis, the first step is to know the data.
 It is imperative to plot a time series before trying to analyze it.
 This simple step will show us any noticeable trend or seasonal variation and allow us to spot outliers<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> or some turning point in the data, which may require the use of more than one mode to fit each part of the data.</p>
 </div>
-<div id="explanation" class="section level2">
-<h2>Explanation</h2>
+<div id="explanation" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Explanation</h2>
 <p>When we have multiple variables collected simultaneously, it may be possible to find some correlation between them.
 The variation of one time series may explain the variation in another time series.
 Multiple regression models may be helpful here.
 We can also convert an input series into an output series by a linear operation and try to understand the relationship between both series.</p>
 </div>
-<div id="prediction" class="section level2">
-<h2>Prediction</h2>
+<div id="prediction" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> Prediction</h2>
 <p>Using the previously available data, we may want to predict the future values of that series.
 Historically, the terms “prediction” and “forecasting” may be used interchangeably or not.
 Thus it is essential to pay attention to how the literature is referring to both terms.
 Sometimes “prediction” may refer to subjective methods or the procedure to achieve the “forecasting” (the objective method or the actual future values).
 There is a close relationship between prediction and control problems where manufacturing processes that are going to move off-target can be proactively corrected.</p>
 </div>
-<div id="control" class="section level2">
-<h2>Control</h2>
+<div id="control" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span> Control</h2>
 <p>When the time series is originated from measures of “quality” of a manufacturing process, the objective of the analysis is to <strong>control</strong> this process.
 There are specific methods to do such control, and this topic is outside the scope of this article.
 Further information is available on specific literature called Statistical Quality Control<span class="citation">[<a href="#ref-montgomery2012" role="doc-biblioref">3</a>]</span>.</p>
 </div>
 </div>
-<div id="before-modeling-time-series" class="section level1">
-<h1>Before Modeling Time Series</h1>
-<div id="transformations" class="section level2">
-<h2>Transformations</h2>
+<div id="before-modeling-time-series" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Before Modeling Time Series</h1>
+<div id="transformations" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Transformations</h2>
 <ul>
 <li>Stabilize variance: a logarithmic transformation may reduce the variance;</li>
 </ul>
+<pre class="r"><code># I&#39;ll explain this line once: this configures the output to hold two plots.
+# And we store the old config. The last line is when we restore the config.
+oldpar &lt;- par(mfrow = c(2, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
+# Get only the Claims column and let&#39;s transform that in a time series, with anual frequency
+claims &lt;- ts(Insurance$Claims, start = c(1973, 365.25*3/4), frequency = 365.25)
+plot.ts(claims, main = &quot;Numbers of Car Insurance claims (1973, Q3)&quot;, ylab = &quot;Claims&quot;)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+plot(log(claims), ylab = &quot;log(Claims)&quot;) # here we log-transform the data
+
+par(oldpar)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/deal_variance-1.png" width="700" style="display: block; margin: auto;" /></p>
 <ul>
 <li>Make seasonality additive: a logarithmic transformation transforms a multiplicative seasonality into an additive one. However, this will only stabilize the variance if the error term is also multiplicative.</li>
 </ul>
+<pre class="r"><code>oldpar &lt;- par(mfrow = c(2, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
+plot(AirPassengers, main = &quot;Monthly totals of international airline passengers&quot;, ylab = &quot;Passengers&quot;)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+plot(log(AirPassengers), ylab = &quot;log(Passengers)&quot;)
+
+par(oldpar)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/deal_additive-1.png" width="700" style="display: block; margin: auto;" /></p>
 <ul>
 <li>Normalize data distribution: data is usually assumed to be normal. Logarithmic and square-root are used; however, they are just special cases of the Box-Cox transformation. The parameters may be estimated by inference, and in general, the transformation cannot overcome all requirements at the same time.</li>
 </ul>
+<pre class="r"><code>layout(mat = matrix(c(1, 1, 2, 3), ncol = 2, byrow = TRUE)) # just plot format
+
+plot.ts(airquality$Ozone, main = &quot;New York Air Quality Measurements, May to September 1973&quot;, ylab = &quot;Ozone&quot;, xlab = &quot;Time&quot;)
+# Here we get the Ozone values, and remove the NA&#39;s so we can make &#39;statistics&#39;
+ozone &lt;- ts(na.omit(airquality$Ozone))
+hist(ozone, probability = 1); lines(density(ozone), col = &quot;red&quot;) # data distribution
+hist(log(ozone), probability = 1); lines(density(log(ozone)), col = &quot;red&quot;) # fairly normalized</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/deal_normality-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>It is interesting to note that Nelson and Granger, in 1979, found little benefit in applying a general Box-Cox transformation in several datasets.
 Usually, it is advised to apply the least possible transformations, except when the variable has a direct physical interpretation.</p>
 </div>
-<div id="dealing-with-trends" class="section level2">
-<h2>Dealing with Trends</h2>
+<div id="dealing-with-trends" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Dealing with Trends</h2>
 <p>Trends in time series are difficult to define and have more than one “formal” definition in literature.
 Loosely we can say that trend is a “long-term change in the mean level.” The main problem is how to define “long-term” in every situation.</p>
-<p>The practical importance of a time series with a trend depends on whether we want to <strong>measure the trend</strong> and/or <strong>remove the trend</strong> so we can analyze the higher frequency oscillations that remain.</p>
+<p>The practical importance of a time series with a trend depends on whether we want to <strong>measure the trend</strong> and/or <strong>remove the trend</strong> so we can analyze the higher frequency oscillations that remain.</p>
 <p>It is important to remember that sometimes we may be more interested in the trend than what is left after removing it.</p>
-<div id="curve-fitting" class="section level3">
-<h3>Curve Fitting</h3>
+<div id="curve-fitting" class="section level3" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Curve Fitting</h3>
 <p>This technique is not more than removing the trend and analyze the “residuals.”
 In general, particularly for yearly data, we can use a simple polynomial curve.</p>
+<pre class="r"><code>oldpar &lt;- par(mfrow = c(2, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
+# Our old friend, AirPassengers dataset. See how it increases both the mean and the variance.
+plot(AirPassengers, main = &quot;Monthly totals of international airline passengers&quot;, ylab = &quot;Passengers&quot;)
+# Let&#39;s just fit a line on the data
+fit &lt;- lm((AirPassengers) ~ seq_along(AirPassengers))
+pred &lt;- predict(fit, data.frame(seq_along(AirPassengers)))
+pred &lt;- ts(pred, start = start(AirPassengers), frequency = frequency(AirPassengers))
+# `pred` contains our line based on the simple linear model we did.
+data &lt;- AirPassengers / pred # why divide and not subtract? because the variance also increases (we have a multiplicative seasonality)
+lines(pred, col = &quot;red&quot;)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+plot(data, ylab = &quot;Passengers / fitted&quot;)
+
+par(oldpar)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/trends_curve_fitting-1.png" width="700" style="display: block; margin: auto;" /></p>
 </div>
-<div id="filtering" class="section level3">
-<h3>Filtering</h3>
+<div id="filtering" class="section level3" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> Filtering</h3>
 <p>Filtering is a little more complex operation than curve fitting.
 We are not just trying to find a polynomial that best fits our data, but we are transforming our original TS into another TS using a formula (that here we call filter).
 This filter can be one of several kinds of “Moving Averages,” locally weighted regressions (e.g., LOESS), or “Splines” (a piecewise polynomial).
 One caveat of these smoothing techniques is the end-effect problem (since in one end of the time series, we do not have all the values to compute, for example, the moving average).</p>
 <p>Simple moving average ex: <span class="math inline">\(Sm(x_t) = \frac{1}{2q+1} \sum^{+q}_{r = -q}x_{t+r}\)</span></p>
 <p>Example with splines:</p>
+<pre class="r"><code>oldpar &lt;- par(mfrow = c(3, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
+plot(USAccDeaths, main = &quot;Accidental Deaths in the US 1973-1978&quot;, ylab = &quot;Accidental Deaths&quot;)
+
+# here is another way to &quot;fit a line&quot;. The number of knots is your choice, but an old Professor once told that 4-5 per year is sufficient.
+pred &lt;- smooth.spline(USAccDeaths, nknots = 24)$y
+pred &lt;- ts(pred, start = start(USAccDeaths), frequency = frequency(USAccDeaths))
+lines(pred, col = &quot;red&quot;)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+data &lt;- USAccDeaths - pred # see how subtraction and division only affects the mean on this case.
+plot(data, ylab = &quot;Deaths - spline&quot;)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+data &lt;- USAccDeaths / pred
+plot(data, ylab = &quot;Deaths / spline&quot;)
+
+par(oldpar)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/trends_curve_fitting2-1.png" width="700" style="display: block; margin: auto;" /></p>
 </div>
-<div id="differencing" class="section level3">
-<h3>Differencing</h3>
+<div id="differencing" class="section level3" number="3.2.3">
+<h3><span class="header-section-number">3.2.3</span> Differencing</h3>
 <p>It is a special kind of filtering, where we compute the difference between the current value and the next.
 It is helpful to remove trends, making a TS stationary.
 We can use differencing multiple times (we call “orders”), but usually, one (“first-order”) iteration is sufficient.
 The mathematical operator used to denote differencing is the “nabla” (<span class="math inline">\(\nabla\)</span>).
 <span class="math inline">\(\nabla^2\)</span> means second-order differencing.</p>
+<pre class="r"><code>oldpar &lt;- par(mfrow = c(2, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
+plot(co2, main = &quot;Mauna Loa Atmospheric CO2 Concentration&quot;, ylab = &quot;CO2 concentration&quot;)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+plot(diff(co2), ylab = &quot;diff(co2)&quot;) # the first difference removes all the trend!
+
+par(oldpar)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/trends_diff-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>See that the example above removed the trend, but kept the seasonality.</p>
 <blockquote>
-<p><strong>The Slutzky-Yule effect</strong><span class="citation">[<a href="#ref-loynes2005" role="doc-biblioref">2</a>]</span>: They showed that by using operations like differencing and moving average, one could <strong>induce</strong> sinusoidal variation in the data that, in fact, is not real information.</p>
+<p><strong>The Slutzky-Yule effect</strong><span class="citation">[<a href="#ref-loynes2005" role="doc-biblioref">2</a>]</span>: They showed that by using operations like differencing and moving average, one could <strong>induce</strong> sinusoidal variation in the data that, in fact, is not real information.</p>
 </blockquote>
 </div>
 </div>
-<div id="dealing-with-seasons" class="section level2">
-<h2>Dealing with Seasons</h2>
-<p>As for trends, the analysis of seasonal variation depends on whether we want to <strong>measure the seasonal effect</strong> and/or <strong>remove the seasonality</strong>.</p>
+<div id="dealing-with-seasons" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Dealing with Seasons</h2>
+<p>As for trends, the analysis of seasonal variation depends on whether we want to <strong>measure the seasonal effect</strong> and/or <strong>remove the seasonality</strong>.</p>
 <p>For a time series with a slight trend, a straightforward estimate of the seasonal effect is to take the average of every January (for example) and subtract (in additive case) or divide by (in multiplicative case) the average of the year.</p>
 <p>For a time series with a significant trend, a more robust approach may be taken.
 For monthly data, we can use:</p>
@@ -183,22 +274,31 @@ Sm(x_t) = \frac{\frac{1}{2}x_{t-6} + x_{t-5} + x_{t-4} + \cdots + x_{t+5} + \fra
 \]</span></p>
 <p>The seasonality can also be eliminated by differencing with lag.
 For example, with monthly data, we can use the operator <span class="math inline">\(\nabla_{12}\)</span>:</p>
+<pre class="r"><code>oldpar &lt;- par(mfrow = c(2, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
+plot(USAccDeaths, main = &quot;Accidental Deaths in the US 1973-1978&quot;, ylab = &quot;Accidental Deaths&quot;)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+# here still a first degree differencing, but with a leap of 12 months.
+# See how we remove the seasonality, but not the trend.
+plot(diff(USAccDeaths, lag = 12), ylab = &quot;diff(lag = 12)&quot;)
+
+par(oldpar)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/seasons_diff-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p><span class="math display">\[
 \nabla_{12}x_t=x_t-x_{t-12}
 \]</span></p>
 <p>See that the example above removed the seasonality, but kept the trend.</p>
 </div>
-<div id="autocorrelation" class="section level2">
-<h2>Autocorrelation</h2>
+<div id="autocorrelation" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Autocorrelation</h2>
 <p>It may be the fundamental property of a time series.
 As pointed before in <a href="#what-is-a-time-series">section 1</a>, time series data has the assumption of non-independence, and autocorrelation is just how we turn this property into an objective and measurable value.
 Autocorrelation measures the correlation between observations at different time lags.
 As we may observe, at time zero, the coefficient is one because the observed value totally agrees with itself, and sometimes this coefficient is skipped in some plots.
 The distribution of these coefficients provides us insight into the probability model that had generated this series.
 Later in <a href="#stationary-processes">section 4.1</a>, we will write the definition of this property.</p>
-<div id="the-correlogram" class="section level3">
-<h3>The correlogram</h3>
+<div id="the-correlogram" class="section level3" number="3.4.1">
+<h3><span class="header-section-number">3.4.1</span> The correlogram</h3>
 <p>The graphic representation of the autocorrelation coefficients is called a correlogram, in which the coefficient <span class="math inline">\(r\)</span> is plotted against the lag <span class="math inline">\(k\)</span>.</p>
 <p>Interpretation.
 Here we offer some general advice:</p>
@@ -214,16 +314,16 @@ Here we can conclude that the correlogram is only helpful after removing any tre
 <li><p><strong>Seasonal fluctuations:</strong> If the data contains seasonal fluctuations, the correlogram will display an oscillation of the same frequency.</p></li>
 </ul>
 </div>
-<div id="testing-for-randomness" class="section level3">
-<h3>Testing for randomness</h3>
+<div id="testing-for-randomness" class="section level3" number="3.4.2">
+<h3><span class="header-section-number">3.4.2</span> Testing for randomness</h3>
 <p>There are valuable tools to test if the data is random or not.
 For the sake of simplicity, this subject will not be covered in this article.
 However, testing residuals for randomness is a different problem<span class="citation">[<a href="#ref-chatfield1996" role="doc-biblioref">1</a>]</span> and will be discussed later.</p>
 </div>
 </div>
 </div>
-<div id="stochastic-processes" class="section level1">
-<h1>Stochastic Processes</h1>
+<div id="stochastic-processes" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Stochastic Processes</h1>
 <p>In the real world, most processes have in their structure a random component.
 The term “stochastic” is a Greek word that means “pertaining to chance.” A more formal definition of a stochastic process is: “a collection of random variables which are ordered in time and defined at a set of time points which may be continuous or discrete”<span class="citation">[<a href="#ref-chatfield1996" role="doc-biblioref">1</a>]</span>.</p>
 <p>Most statistical problems are focused on estimating the properties of a population from a sample.
@@ -232,8 +332,8 @@ When we read a value from a sensor (for a plausible example, let us think of an 
 This infinite set of possible values that could compose our time series is called an <strong>ensemble.</strong> The actual time series we have is one of the possibly <strong>realizations</strong> of the stochastic process.</p>
 <p>As with other mathematical functions, a simple way to describe the stochastic process (as probability function) is using its <a href="https://en.wikipedia.org/wiki/Moment_(mathematics)">moments</a>.
 The first moment is the mean, and the second moment is the variance (and the autocovariance, for a sequence of random variables).</p>
-<div id="stationary-processes" class="section level2">
-<h2>Stationary Processes</h2>
+<div id="stationary-processes" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Stationary Processes</h2>
 <p>It is the process that is ready to model.
 In other words, the previous steps before modeling a time series are to make it stationary.
 Loosely speaking, a stationary process is a process that has a constant mean, variance, and no periodic variations.</p>
@@ -254,15 +354,15 @@ Thus the autocovariance function (ACVF) <span class="math inline">\(\gamma(t_1, 
 <p>The reasoning behind the suggestion that the distribution of <span class="math inline">\(X(t)\)</span> should be the same for all <span class="math inline">\(t\)</span> resides in the fact that many processes that converge to an <strong>equilibrium</strong> as <span class="math inline">\(t \rightarrow \infty\)</span>, which the probability distribution of <span class="math inline">\(X(t)\)</span> does <strong>not</strong> depend on the initial conditions.
 With this assumption, after the process has been running for some time, the probability distribution of <span class="math inline">\(X(t)\)</span> will change very little.</p>
 <p>Strict stationarity is very restrictive and few processes achieve it.</p>
-<div id="second-order-stationarity" class="section level3">
-<h3>Second-order Stationarity</h3>
+<div id="second-order-stationarity" class="section level3" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> Second-order Stationarity</h3>
 <p>A more helpful definition, for practical reasons, is a less restricted definition of stationarity where the mean is constant, and <strong>ACVF</strong> only depends on the lag.
 This process is called second-order stationary.</p>
 <p>This simplified definition of stationarity will be generally as long as the properties of the processes depend only on its structure as specified by its <a href="#stochastic-processes">first and second moments</a>.</p>
 </div>
 </div>
-<div id="the-autocorrelation-function" class="section level2">
-<h2>The autocorrelation function</h2>
+<div id="the-autocorrelation-function" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> The autocorrelation function</h2>
 <p>As shown in <a href="#the-correlogram">section 3.4.1</a>, the autocorrelation coefficients are helpful in describing a time series.
 The autocorrelation function (<strong>ACF</strong>) is an essential tool for assessing its properties.</p>
 <p>Here we will describe the properties of the <strong>ACF</strong>.</p>
@@ -271,8 +371,8 @@ Then</p>
 <p><span class="math display">\[
 \rho(\tau)=\gamma(\tau)/\gamma(0) = \gamma(\tau)/\sigma^2 \qquad \text{for } \rho(0)=1
 \]</span></p>
-<div id="property-1" class="section level3">
-<h3>Property 1</h3>
+<div id="property-1" class="section level3" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> Property 1</h3>
 <p>The <strong>ACF</strong> is an <strong>even</strong> function of the lag in that</p>
 <p><span class="math display">\[
 \rho(\tau)=\rho(-\tau)
@@ -287,8 +387,8 @@ The result is easily proved using <span class="math inline">\(\gamma(\tau)=\rho(
 \end{aligned}
 \]</span></p>
 </div>
-<div id="property-2" class="section level3">
-<h3>Property 2</h3>
+<div id="property-2" class="section level3" number="4.2.2">
+<h3><span class="header-section-number">4.2.2</span> Property 2</h3>
 <p><span class="math inline">\(|\rho(\tau)| \leq 1\)</span>.
 This is the “usual” property of a correlation.
 It is proved by noting that</p>
@@ -311,8 +411,8 @@ When <span class="math inline">\(\lambda_1 = 1, \lambda_2 = -1\)</span>, we find
 \]</span></p>
 <p>so that <span class="math inline">\(\rho(\tau) \le +1\)</span></p>
 </div>
-<div id="property-3" class="section level3">
-<h3>Property 3</h3>
+<div id="property-3" class="section level3" number="4.2.3">
+<h3><span class="header-section-number">4.2.3</span> Property 3</h3>
 <p>Lack of uniqueness.
 A stochastic process has a unique covariance structure.
 However, the opposite is not valid.
@@ -320,10 +420,10 @@ We can find other processes that produce the same <strong>ACF</strong>, adding a
 To overcome this problem, we have the invertibility condition that will be described later on <a href="#moving-average-processes">Moving average processes</a>.</p>
 </div>
 </div>
-<div id="some-useful-stochastic-processes" class="section level2">
-<h2>Some useful stochastic processes</h2>
-<div id="purely-random-process" class="section level3">
-<h3>Purely random process</h3>
+<div id="some-useful-stochastic-processes" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Some useful stochastic processes</h2>
+<div id="purely-random-process" class="section level3" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> Purely random process</h3>
 <p>A process can be called purely random if it is composed of a sequence of random variables <span class="math inline">\(\{Z_t\}\)</span> that are independent and identically distributed.
 By definition, it has constant mean and variance, given that</p>
 <p><span class="math display">\[
@@ -339,6 +439,15 @@ The <strong>ACF</strong> is given by</p>
 0 &amp; k=\pm 1, \pm 2, \ldots
 \end{array}\right.
 \]</span></p>
+<pre class="r"><code>set.seed(2021)
+oldpar &lt;- par(mfrow = c(2, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
+normal_random &lt;- rnorm(500)
+plot.ts(normal_random, main = &quot;Purely random series - N(0, 1)&quot;, ylab = &quot;Value&quot;)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+acf(normal_random, lag.max = 1000)
+
+par(oldpar)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/acf_random-1.png" width="700" style="display: block; margin: auto;" /></p>
 <div style="font-size:70%;text-align:center">
 <p>In the example above, the <strong>ACF</strong> function was kept along the entire dataset for academic purposes.
@@ -346,8 +455,8 @@ Normally it is shown only the <span class="math inline">\(10*log10(N/m)\)</span>
 </div>
 <p>This type of process is of particular importance as building blocks of more complicated processes such as moving average processes.</p>
 </div>
-<div id="random-walk" class="section level3">
-<h3>Random walk</h3>
+<div id="random-walk" class="section level3" number="4.3.2">
+<h3><span class="header-section-number">4.3.2</span> Random walk</h3>
 <p>The Random Walk is a process very similar to the previous process.
 The difference lies in that the current observation sums the current random variable to the previous observation instead of being independent.
 The definition is given by</p>
@@ -364,11 +473,23 @@ X_t= \sum_{i=1}^t Z_i
 \]</span></p>
 <p>Then we find that <span class="math inline">\(E(X_t)=t\mu\)</span> and that <span class="math inline">\(Var(X_t)=t\sigma^2_Z\)</span>.
 As the mean and variance change with <span class="math inline">\(t\)</span>, the process is non-stationary.</p>
+<pre class="r"><code>set.seed(2021)
+
+random_walk &lt;- cumsum(rnorm(500))
+plot.ts(random_walk, main = &quot;Random Walk - N(0, 1)&quot;, ylab = &quot;Value&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/stoch_rwalk-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>Meanwhile, the interesting feature is that the first difference of a random walk forms a purely random process, which is therefore stationary.</p>
+<pre class="r"><code>set.seed(2021)
+
+random_norm &lt;- rnorm(500)
+random_walk &lt;- cumsum(random_norm) # same from the last plot
+diff_walk &lt;- diff(random_walk)
+# below we use 2:500 because with diff, we lose the first observation
+all.equal(diff_walk, random_norm[2:500])
+## [1] TRUE</code></pre>
 </div>
-<div id="moving-average-processes" class="section level3">
-<h3>Moving average processes</h3>
+<div id="moving-average-processes" class="section level3" number="4.3.3">
+<h3><span class="header-section-number">4.3.3</span> Moving average processes</h3>
 <p>First, not to be confused with the <strong>moving average</strong> algorithm.
 The moving average process is a common approach to model a univariate time series.
 The concept is that the current value <span class="math inline">\(X_t\)</span> depends <strong>linearly</strong> on <span class="math inline">\(q\)</span> past values of a stochastic process.
@@ -427,11 +548,22 @@ Furthermore, if the <span class="math inline">\(Z\)</span>s are normally distrib
 <p>Note that the <strong>ACF</strong> is “clipped” to zero at lag <span class="math inline">\(q\)</span>.
 This is a feature of <span class="math inline">\(\text{MA}\)</span> processes that we can spot on <strong>ACF</strong> plots.
 In practice, the “zero” will be a value below the significance line.</p>
+<pre class="r"><code>oldpar &lt;- par(mfrow = c(3, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+set.seed(2021)
+
+mov_avg &lt;- arima.sim(list(order = c(0,0,1), ma = 0.8), n = 200)
+plot.ts(mov_avg, main = &quot;Moving Average MA(1)&quot;, ylab = &quot;Value&quot;)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+acf(mov_avg)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+pacf(mov_avg)
+
+par(oldpar)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/stoch_movavg-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>There is no restriction on <span class="math inline">\(\{\beta_i\}\)</span> values to produce a stationary <span class="math inline">\(\text{MA}\)</span> process.
 However, as we briefly mentioned at the <strong>ACF</strong> <a href="#property-3">Property 3</a>, it is desirable that the process is <strong>invertible</strong> (e.g., Box and Jenkins, 1970, p. 50).</p>
-<div id="first-order-process" class="section level4">
-<h4>First-order process</h4>
+<div id="first-order-process" class="section level4" number="4.3.3.1">
+<h4><span class="header-section-number">4.3.3.1</span> First-order process</h4>
 <p>The invertibility issue is shown below, where two different <span class="math inline">\(\text{MA}(1)\)</span> processes results in the same <strong>ACF</strong>:</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -468,14 +600,14 @@ A <span class="math inline">\(\text{MA}\)</span> process of order <span class="m
 <p>For example, in the first-order case, <span class="math inline">\(\text{MA}(1)\)</span>, we have <span class="math inline">\(\theta(B)=1+\theta B\)</span>, which has root <span class="math inline">\(B=-1/\theta\)</span>.
 Thus the root is outside the unit circle provided that <span class="math inline">\(|\theta| &lt; 1\)</span><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
 </div>
-<div id="general-order-case" class="section level4">
-<h4>General-order case</h4>
+<div id="general-order-case" class="section level4" number="4.3.3.2">
+<h4><span class="header-section-number">4.3.3.2</span> General-order case</h4>
 <p>We can also extend the concept to the general case of <span class="math inline">\(\text{MA}(q)\)</span>, where we can decompose de polynomial <span class="math inline">\(\theta(B)\)</span> as <span class="math inline">\(\theta(B) = (1 +\theta_1B)\cdots(1 +\theta_qB)\)</span>.
 In this case, if all the roots <span class="math inline">\(-1/\theta_1, \dots, -1/\theta_q\)</span> shall lie outside the unit circle, so the process is invertible.</p>
 </div>
 </div>
-<div id="autoregressive-processes" class="section level3">
-<h3>Autoregressive processes</h3>
+<div id="autoregressive-processes" class="section level3" number="4.3.4">
+<h3><span class="header-section-number">4.3.4</span> Autoregressive processes</h3>
 <p>In the previous section about the moving average process, we imagined the process as an experiment where you had an impulse applied to a random process with a finite time span influence.
 Here we can think of an experiment where this impulse persists in time, but its influence is not visible immediately, but we see it as a repeatable pattern over and over.
 This also implies that the <span class="math inline">\(\text{AR}\)</span> process may not be stationary, in contrast with <span class="math inline">\(\text{MA}\)</span> process.
@@ -487,8 +619,8 @@ X_t=\alpha_1 X_{t-1} + \cdots + \alpha_p X_{t-p} + Z_t \tag{4.3.4.1}
 \]</span></p>
 <p>In contrast with the <span class="math inline">\(\text{MA}\)</span> process, the <span class="math inline">\(\text{AR}\)</span> process looks like a multiple regression model since <span class="math inline">\(X_t\)</span> is regressed not on independent variables but past values of <span class="math inline">\(X_t\)</span>.
 An autoregressive process of order <span class="math inline">\(p\)</span> will be abbreviated to an <span class="math inline">\(\text{AR}(p)\)</span> process.</p>
-<div id="first-order-process-1" class="section level4">
-<h4>First-order process</h4>
+<div id="first-order-process-1" class="section level4" number="4.3.4.1">
+<h4><span class="header-section-number">4.3.4.1</span> First-order process</h4>
 <p>For a better understanding, we will analyze the first-order case, for <span class="math inline">\(p=1\)</span>.
 Then</p>
 <p><span class="math display">\[
@@ -560,10 +692,21 @@ This means that, keeping the same restrictions, <span class="math inline">\(\rho
 But if <span class="math inline">\(|\alpha| = 1\)</span>, then <span class="math inline">\(|\rho(k)| = 1\)</span> for all <span class="math inline">\(k\)</span>, which is a degenerate case.
 Thus <span class="math inline">\(|\alpha| &lt; 1\)</span> is required for a proper stationary process.</p>
 <p>The above method of obtaining the <strong>ACF</strong> commonly used, over the assumption that the time series is stationary.</p>
+<pre class="r"><code>oldpar &lt;- par(mfrow = c(3, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+set.seed(2021)
+
+auto_reg &lt;- arima.sim(list(order = c(1,0,0), ar = 0.8), n = 200)
+plot.ts(auto_reg, main = &quot;Autoregressive AR(1)&quot;, ylab = &quot;Value&quot;)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+acf(auto_reg)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+pacf(auto_reg)
+
+par(oldpar)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/stoch_autoreg-1.png" width="700" style="display: block; margin: auto;" /></p>
 </div>
-<div id="general-order-case-1" class="section level4">
-<h4>General-order case</h4>
+<div id="general-order-case-1" class="section level4" number="4.3.4.2">
+<h4><span class="header-section-number">4.3.4.2</span> General-order case</h4>
 <p>In the general-order case, the same property of the first-order case stands true: an <span class="math inline">\(\text{AR}\)</span> process of finite order can be represented as a <span class="math inline">\(\text{MA}\)</span> process of infinite order.
 We can use the same methods as before, by successive substitution or by using the backward shift operator.
 Then equation (4.3.4.1) may be written as</p>
@@ -671,8 +814,8 @@ X_t - \mu=\alpha_1 (X_{t-1} -\mu)+ \cdots + \alpha_p (X_{t-p} - \mu) + Z_t
 <p>This does not affect the <strong>ACF</strong>.</p>
 </div>
 </div>
-<div id="mixed-textarma-models" class="section level3">
-<h3>Mixed <span class="math inline">\(\text{ARMA}\)</span> models</h3>
+<div id="mixed-textarma-models" class="section level3" number="4.3.5">
+<h3><span class="header-section-number">4.3.5</span> Mixed <span class="math inline">\(\text{ARMA}\)</span> models</h3>
 <p>Using the previous knowledge of <span class="math inline">\(\text{MA}\)</span> and <span class="math inline">\(\text{AR}\)</span> processes, and their relations, we can combine both into a mixed autoregressive/moving-average process containing <span class="math inline">\(p\)</span> <span class="math inline">\(\text{AR}\)</span> terms and <span class="math inline">\(q\)</span> <span class="math inline">\(\text{MA}\)</span> terms.
 This is the <span class="math inline">\(\text{ARMA}\)</span> process of order <span class="math inline">\((p, q)\)</span>, and it is given by</p>
 <p><span class="math display">\[
@@ -690,8 +833,8 @@ X_t=\alpha_1X_{t-1}+ \cdots + \alpha_pX_{t-p} + Z_t + \beta_1Z_{t-1}+ \cdots + \
 <p><span class="math display">\[
 \theta(B) = 1 + \beta_1B+\cdots+\beta_qB^q
 \]</span></p>
-<div id="stationarity-and-invertibility-conditions" class="section level4">
-<h4>Stationarity and invertibility conditions</h4>
+<div id="stationarity-and-invertibility-conditions" class="section level4" number="4.3.5.1">
+<h4><span class="header-section-number">4.3.5.1</span> Stationarity and invertibility conditions</h4>
 <p>The values of <span class="math inline">\(\{\alpha_i\}\)</span> which makes the <span class="math inline">\(\text{AR}\)</span> process stationary must be such that the roots of</p>
 <p><span class="math display">\[
 \phi(B) = 0
@@ -709,6 +852,17 @@ You can find it on Box and Jenkins, 1970, Section 3.4).</p>
 <p><span class="math display">\[
 \rho(k) = \alpha\rho(k − 1) \qquad k \ge 2
 \]</span></p>
+<pre class="r"><code>set.seed(2021)
+oldpar &lt;- par(mfrow = c(3, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
+stoch_arma &lt;- arima.sim(list(order = c(1,0,1), ma = 0.8, ar = 0.8), n = 200)
+plot.ts(stoch_arma, main = &quot;ARMA AR(1) MA(1)&quot;, ylab = &quot;Value&quot;)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+acf(stoch_arma)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+pacf(stoch_arma)
+
+par(oldpar)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/stoch_arma-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>And the general case, we have</p>
 <p><span class="math display">\[
@@ -717,8 +871,8 @@ You can find it on Box and Jenkins, 1970, Section 3.4).</p>
 <p>Our primary objective here is to see how we can describe a stationary time series using an <span class="math inline">\(\text{ARMA}\)</span> model using fewer parameters than if we used a <span class="math inline">\(\text{MA}\)</span> or <span class="math inline">\(\text{AR}\)</span> process alone.
 This is also known as the <strong>Principle of Parsimony</strong>, where it means that we want a model with fewer parameters possible that still represents our data adequately.</p>
 </div>
-<div id="the-textar-and-textma-representations" class="section level4">
-<h4>The <span class="math inline">\(\text{AR}\)</span> and <span class="math inline">\(\text{MA}\)</span> representations</h4>
+<div id="the-textar-and-textma-representations" class="section level4" number="4.3.5.2">
+<h4><span class="header-section-number">4.3.5.2</span> The <span class="math inline">\(\text{AR}\)</span> and <span class="math inline">\(\text{MA}\)</span> representations</h4>
 <p>It is clearer to express an <span class="math inline">\(\text{ARMA}\)</span> model as a pure <span class="math inline">\(\text{MA}\)</span> process in the form</p>
 <p><span class="math display">\[
 X_t=\psi(B)Z_t \tag{4.3.5.1b}
@@ -737,8 +891,8 @@ X_t=\sum_{i=1}^\infty \pi_i X_{t-i} + Z_t
 \]</span></p>
 </div>
 </div>
-<div id="integrated-textarima-models" class="section level3">
-<h3>Integrated <span class="math inline">\(\text{ARIMA}\)</span> models</h3>
+<div id="integrated-textarima-models" class="section level3" number="4.3.6">
+<h3><span class="header-section-number">4.3.6</span> Integrated <span class="math inline">\(\text{ARIMA}\)</span> models</h3>
 <p>In real life, most of the time series we have are non-stationary.
 This means we have to first remove this source of variation before working with the models we have seen until now, or, we use another composition that already takes in account the non-stationarity.
 As suggested in section <a href="#differencing">3.2.3</a>, we can difference the time series to turn it stationary.</p>
@@ -760,6 +914,17 @@ W_t = \alpha_1 W_{t-1} + \cdots + \alpha_p W_{t-p} + Z_t + \cdots + \beta_qZ_{t-
 <p><span class="math display">\[
 \phi(B)(1-B)^dX_t=\theta(B)Z_t \tag{4.3.6.1b}
 \]</span></p>
+<pre class="r"><code>oldpar &lt;- par(mfrow = c(3, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+set.seed(2021)
+
+stoch_arma &lt;- arima.sim(list(order = c(2,1,2), ma = c(-0.2279, 0.2488), ar = c(0.8897, -0.4858)), n = 200)
+plot.ts(stoch_arma, main = &quot;ARIMA(2, 1, 2)&quot;, ylab = &quot;Value&quot;)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+acf(stoch_arma)
+par(mar = c(5.1, 4.1, 0.1, 1.1))
+pacf(stoch_arma)
+
+par(oldpar)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/stoch_arima-1.png" width="700" style="display: block; margin: auto;" /></p>
 <p>Thus we have an <span class="math inline">\(\text{ARIMA}\)</span> process of order <span class="math inline">\((p,d,q)\)</span>.
 The model for <span class="math inline">\(X_t\)</span> is clearly non-stationary, as the <span class="math inline">\(\text{AR}\)</span> operator <span class="math inline">\(\phi(B)(1 - B)^d\)</span> has <span class="math inline">\(d\)</span> roots on the unit circle.
@@ -835,7 +1000,7 @@ If all correct, you will have the same values.
 Tip: you may need to align the starting value and multiply the rollmean() output by 2 (the order of the moving average process).<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 <li id="fn4"><p>In the R language, we often see the <strong>inverse</strong> roots when we plot an ARIMA model.
 In this case, we will see the roots <strong>inside</strong> the unit circle when the process is invertible.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
-<li id="fn5"><p>Remember the <em>power series</em> where <span class="math inline">\(\frac{a}{1-x} = \sum_{n=0}^\infty ax^n\)</span>.
+<li id="fn5"><p>Remember the <em>power series</em> where <span class="math inline">\(\frac{a}{1-x} = \sum_{n=0}^\infty ax^n\)</span>.
 Thus we have <span class="math inline">\(\frac{Z_t}{1-(\alpha B)} = \sum_{n=0}^\infty Z_t(\alpha B)^n\)</span><a href="#fnref5" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

@@ -1,27 +1,35 @@
 ---
 title: Time Series Introduction with R codes
 author: Francisco Bischoff
-date: '2021-05-21'
-slug: time-series-introduction-with-r-codes
+date: '2021-06-16'
 categories:
-  - timeseries
   - R
   - r-bloggers
+  - timeseries
 tags:
   - R
+slug: time-series-introduction-with-r-codes
 bibliography: references.yaml
 csl: springer-lncs.csl
-mathjax: true
-output: blogdown::html_page
+mathjax: yes
+editor_options:
+  markdown:
+    mode: markdown
+output:
+  blogdown::html_page:
+    number_sections: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       fig.show = "hold",
-                      fig.align = "center",
-                       dpi = 100)
+                      fig.align = "center", dpi = 100, collapse = TRUE)
+
+# knitr::opts_chunk$set(warning = FALSE, tidy.opts = list(width.cutoff = 90), tidy = TRUE,
+#                       fig.align = "center", fig.width = 10)
+
+
 knitr::opts_knit$set(progress = TRUE)
-library(MASS)
 ```
 
 # What is a Time Series {#what-is-a-time-series}
@@ -50,6 +58,16 @@ There are many models available to describe the behavior of a particular series.
 The choice of such a model depends on factors such as the behavior of the phenomenon or the prior knowledge of its nature and the purpose of the analysis.
 
 ## Types of Time Series
+
+The R base installation already gives us lots of datasets to work on time-series.
+For this article I'll first load the `MASS` package that contains some of the dataset we will use.
+We can list all datasets available with the function `data()` from package `utils`.
+
+```{r mass}
+library(MASS)
+
+data() # the output is not shown, but you can check in your RStudio
+```
 
 1.  Measured at regular time intervals (discrete), examples:
 
@@ -80,7 +98,7 @@ The choice of such a model depends on factors such as the behavior of the phenom
     -   Process control: factory measurements like final can weights, quality scores;
 
     ```{r type_process_control}
-    knitr::include_graphics("control_chart.png")
+    knitr::include_graphics("control_chart.png") # here I borrowed an image, sorry.
     ```
 
     ::: {style="font-size:70%;text-align:center"}
@@ -117,7 +135,7 @@ The choice of such a model depends on factors such as the behavior of the phenom
     -   Analog signals: sound, temperature, humidity, ECG[^1].
 
     ```{r type_ecg, message=FALSE, warning=FALSE}
-    ecg_example <- readr::read_csv("ecg_example.csv")
+    ecg_example <- readr::read_csv("ecg_example.csv") # this data you can find on physionet
     plot.ts(ecg_example, main = "ECG example", ylim = c(-4, 7), yaxp = c(-2, 4, 3),
          ylab = "Value", xlab = "Continuous time (ms)", xlim = c(0, 1000))
     ```
@@ -162,11 +180,16 @@ Further information is available on specific literature called Statistical Quali
 -   Stabilize variance: a logarithmic transformation may reduce the variance;
 
 ```{r deal_variance}
-claims <- ts(Insurance$Claims, start = c(1973, 365.25*3/4), frequency = 365.25)
+# I'll explain this line once: this configures the output to hold two plots.
+# And we store the old config. The last line is when we restore the config.
 oldpar <- par(mfrow = c(2, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
+# Get only the Claims column and let's transform that in a time series, with anual frequency
+claims <- ts(Insurance$Claims, start = c(1973, 365.25*3/4), frequency = 365.25)
 plot.ts(claims, main = "Numbers of Car Insurance claims (1973, Q3)", ylab = "Claims")
 par(mar = c(5.1, 4.1, 0.1, 1.1))
-plot(log(claims), ylab = "log(Claims)")
+plot(log(claims), ylab = "log(Claims)") # here we log-transform the data
+
 par(oldpar)
 ```
 
@@ -174,20 +197,24 @@ par(oldpar)
 
 ```{r deal_additive}
 oldpar <- par(mfrow = c(2, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
 plot(AirPassengers, main = "Monthly totals of international airline passengers", ylab = "Passengers")
 par(mar = c(5.1, 4.1, 0.1, 1.1))
 plot(log(AirPassengers), ylab = "log(Passengers)")
+
 par(oldpar)
 ```
 
 -   Normalize data distribution: data is usually assumed to be normal. Logarithmic and square-root are used; however, they are just special cases of the Box-Cox transformation. The parameters may be estimated by inference, and in general, the transformation cannot overcome all requirements at the same time.
 
 ```{r deal_normality}
-ozone <- ts(na.omit(airquality$Ozone))
-layout(mat = matrix(c(1, 1, 2, 3), ncol = 2, byrow = TRUE))
+layout(mat = matrix(c(1, 1, 2, 3), ncol = 2, byrow = TRUE)) # just plot format
+
 plot.ts(airquality$Ozone, main = "New York Air Quality Measurements, May to September 1973", ylab = "Ozone", xlab = "Time")
-hist(ozone, probability = 1); lines(density(ozone), col = "red")
-hist(log(ozone), probability = 1); lines(density(log(ozone)), col = "red")
+# Here we get the Ozone values, and remove the NA's so we can make 'statistics'
+ozone <- ts(na.omit(airquality$Ozone))
+hist(ozone, probability = 1); lines(density(ozone), col = "red") # data distribution
+hist(log(ozone), probability = 1); lines(density(log(ozone)), col = "red") # fairly normalized
 ```
 
 It is interesting to note that Nelson and Granger, in 1979, found little benefit in applying a general Box-Cox transformation in several datasets.
@@ -198,7 +225,7 @@ Usually, it is advised to apply the least possible transformations, except when 
 Trends in time series are difficult to define and have more than one "formal" definition in literature.
 Loosely we can say that trend is a "long-term change in the mean level." The main problem is how to define "long-term" in every situation.
 
-The practical importance of a time series with a trend depends on whether we want to **measure the trend** and/or **remove the trend** so we can analyze the higher frequency oscillations that remain.
+The practical importance of a time series with a trend depends on whether we want to **measure the trend** and/or **remove the trend** so we can analyze the higher frequency oscillations that remain.
 
 It is important to remember that sometimes we may be more interested in the trend than what is left after removing it.
 
@@ -209,14 +236,19 @@ In general, particularly for yearly data, we can use a simple polynomial curve.
 
 ```{r trends_curve_fitting}
 oldpar <- par(mfrow = c(2, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
+# Our old friend, AirPassengers dataset. See how it increases both the mean and the variance.
 plot(AirPassengers, main = "Monthly totals of international airline passengers", ylab = "Passengers")
+# Let's just fit a line on the data
 fit <- lm((AirPassengers) ~ seq_along(AirPassengers))
 pred <- predict(fit, data.frame(seq_along(AirPassengers)))
 pred <- ts(pred, start = start(AirPassengers), frequency = frequency(AirPassengers))
-data <- AirPassengers / pred
+# `pred` contains our line based on the simple linear model we did.
+data <- AirPassengers / pred # why divide and not subtract? because the variance also increases (we have a multiplicative seasonality)
 lines(pred, col = "red")
 par(mar = c(5.1, 4.1, 0.1, 1.1))
 plot(data, ylab = "Passengers / fitted")
+
 par(oldpar)
 ```
 
@@ -233,16 +265,20 @@ Example with splines:
 
 ```{r trends_curve_fitting2}
 oldpar <- par(mfrow = c(3, 1), mar = c(3.1, 4.1, 2.1, 1.1))
-plot(USAccDeaths, main = "Accidental Deaths in the US 1973–1978", ylab = "Accidental Deaths")
-pred <- smooth.spline(USAccDeaths, nknots = 15)$y
+
+plot(USAccDeaths, main = "Accidental Deaths in the US 1973-1978", ylab = "Accidental Deaths")
+
+# here is another way to "fit a line". The number of knots is your choice, but an old Professor once told that 4-5 per year is sufficient.
+pred <- smooth.spline(USAccDeaths, nknots = 24)$y
 pred <- ts(pred, start = start(USAccDeaths), frequency = frequency(USAccDeaths))
 lines(pred, col = "red")
 par(mar = c(5.1, 4.1, 0.1, 1.1))
-data <- USAccDeaths - pred
+data <- USAccDeaths - pred # see how subtraction and division only affects the mean on this case.
 plot(data, ylab = "Deaths - spline")
 par(mar = c(5.1, 4.1, 0.1, 1.1))
 data <- USAccDeaths / pred
 plot(data, ylab = "Deaths / spline")
+
 par(oldpar)
 ```
 
@@ -256,19 +292,21 @@ $\nabla^2$ means second-order differencing.
 
 ```{r trends_diff}
 oldpar <- par(mfrow = c(2, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
 plot(co2, main = "Mauna Loa Atmospheric CO2 Concentration", ylab = "CO2 concentration")
 par(mar = c(5.1, 4.1, 0.1, 1.1))
-plot(diff(co2), ylab = "diff(co2)")
+plot(diff(co2), ylab = "diff(co2)") # the first difference removes all the trend!
+
 par(oldpar)
 ```
 
 See that the example above removed the trend, but kept the seasonality.
 
-> **The Slutzky-Yule effect**[@loynes2005]: They showed that by using operations like differencing and moving average, one could **induce** sinusoidal variation in the data that, in fact, is not real information.
+> **The Slutzky-Yule effect**[@loynes2005]: They showed that by using operations like differencing and moving average, one could **induce** sinusoidal variation in the data that, in fact, is not real information.
 
 ## Dealing with Seasons
 
-As for trends, the analysis of seasonal variation depends on whether we want to **measure the seasonal effect** and/or **remove the seasonality**.
+As for trends, the analysis of seasonal variation depends on whether we want to **measure the seasonal effect** and/or **remove the seasonality**.
 
 For a time series with a slight trend, a straightforward estimate of the seasonal effect is to take the average of every January (for example) and subtract (in additive case) or divide by (in multiplicative case) the average of the year.
 
@@ -284,9 +322,13 @@ For example, with monthly data, we can use the operator $\nabla_{12}$:
 
 ```{r seasons_diff}
 oldpar <- par(mfrow = c(2, 1), mar = c(3.1, 4.1, 2.1, 1.1))
-plot(USAccDeaths, main = "Accidental Deaths in the US 1973–1978", ylab = "Accidental Deaths")
+
+plot(USAccDeaths, main = "Accidental Deaths in the US 1973-1978", ylab = "Accidental Deaths")
 par(mar = c(5.1, 4.1, 0.1, 1.1))
+# here still a first degree differencing, but with a leap of 12 months.
+# See how we remove the seasonality, but not the trend.
 plot(diff(USAccDeaths, lag = 12), ylab = "diff(lag = 12)")
+
 par(oldpar)
 ```
 
@@ -481,11 +523,13 @@ $$
 
 ```{r acf_random}
 set.seed(2021)
-normal_random <- rnorm(500)
 oldpar <- par(mfrow = c(2, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
+normal_random <- rnorm(500)
 plot.ts(normal_random, main = "Purely random series - N(0, 1)", ylab = "Value")
 par(mar = c(5.1, 4.1, 0.1, 1.1))
 acf(normal_random, lag.max = 1000)
+
 par(oldpar)
 ```
 
@@ -523,11 +567,22 @@ As the mean and variance change with $t$, the process is non-stationary.
 
 ```{r stoch_rwalk}
 set.seed(2021)
+
 random_walk <- cumsum(rnorm(500))
 plot.ts(random_walk, main = "Random Walk - N(0, 1)", ylab = "Value")
 ```
 
 Meanwhile, the interesting feature is that the first difference of a random walk forms a purely random process, which is therefore stationary.
+
+```{r stoch_rwalk_stoch}
+set.seed(2021)
+
+random_norm <- rnorm(500)
+random_walk <- cumsum(random_norm) # same from the last plot
+diff_walk <- diff(random_walk)
+# below we use 2:500 because with diff, we lose the first observation
+all.equal(diff_walk, random_norm[2:500])
+```
 
 ### Moving average processes {#moving-average-processes}
 
@@ -604,15 +659,16 @@ This is a feature of $\text{MA}$ processes that we can spot on **ACF** plots.
 In practice, the "zero" will be a value below the significance line.
 
 ```{r stoch_movavg}
-set.seed(2021)
-mov_avg <- arima.sim(list(order = c(0,0,1), ma = 0.8), n = 200)
-
 oldpar <- par(mfrow = c(3, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+set.seed(2021)
+
+mov_avg <- arima.sim(list(order = c(0,0,1), ma = 0.8), n = 200)
 plot.ts(mov_avg, main = "Moving Average MA(1)", ylab = "Value")
 par(mar = c(5.1, 4.1, 0.1, 1.1))
 acf(mov_avg)
 par(mar = c(5.1, 4.1, 0.1, 1.1))
 pacf(mov_avg)
+
 par(oldpar)
 ```
 
@@ -786,15 +842,16 @@ Thus $|\alpha| < 1$ is required for a proper stationary process.
 The above method of obtaining the **ACF** commonly used, over the assumption that the time series is stationary.
 
 ```{r stoch_autoreg}
-set.seed(2021)
-auto_reg <- arima.sim(list(order = c(1,0,0), ar = 0.8), n = 200)
-
 oldpar <- par(mfrow = c(3, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+set.seed(2021)
+
+auto_reg <- arima.sim(list(order = c(1,0,0), ar = 0.8), n = 200)
 plot.ts(auto_reg, main = "Autoregressive AR(1)", ylab = "Value")
 par(mar = c(5.1, 4.1, 0.1, 1.1))
 acf(auto_reg)
 par(mar = c(5.1, 4.1, 0.1, 1.1))
 pacf(auto_reg)
+
 par(oldpar)
 ```
 
@@ -1001,14 +1058,15 @@ $$
 
 ```{r stoch_arma}
 set.seed(2021)
-stoch_arma <- arima.sim(list(order = c(1,0,1), ma = 0.8, ar = 0.8), n = 200)
-
 oldpar <- par(mfrow = c(3, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+
+stoch_arma <- arima.sim(list(order = c(1,0,1), ma = 0.8, ar = 0.8), n = 200)
 plot.ts(stoch_arma, main = "ARMA AR(1) MA(1)", ylab = "Value")
 par(mar = c(5.1, 4.1, 0.1, 1.1))
 acf(stoch_arma)
 par(mar = c(5.1, 4.1, 0.1, 1.1))
 pacf(stoch_arma)
+
 par(oldpar)
 ```
 
@@ -1081,15 +1139,16 @@ $$
 $$
 
 ```{r stoch_arima}
-set.seed(2021)
-stoch_arma <- arima.sim(list(order = c(2,1,2), ma = c(-0.2279, 0.2488), ar = c(0.8897, -0.4858)), n = 200)
-
 oldpar <- par(mfrow = c(3, 1), mar = c(3.1, 4.1, 2.1, 1.1))
+set.seed(2021)
+
+stoch_arma <- arima.sim(list(order = c(2,1,2), ma = c(-0.2279, 0.2488), ar = c(0.8897, -0.4858)), n = 200)
 plot.ts(stoch_arma, main = "ARIMA(2, 1, 2)", ylab = "Value")
 par(mar = c(5.1, 4.1, 0.1, 1.1))
 acf(stoch_arma)
 par(mar = c(5.1, 4.1, 0.1, 1.1))
 pacf(stoch_arma)
+
 par(oldpar)
 ```
 
@@ -1158,5 +1217,5 @@ $\rho(\tau)$
 [^4]: In the R language, we often see the **inverse** roots when we plot an ARIMA model.
     In this case, we will see the roots **inside** the unit circle when the process is invertible.
 
-[^5]: Remember the *power series* where $\frac{a}{1-x} = \sum_{n=0}^\infty ax^n$.
+[^5]: Remember the *power series* where $\frac{a}{1-x} = \sum_{n=0}^\infty ax^n$.
     Thus we have $\frac{Z_t}{1-(\alpha B)} = \sum_{n=0}^\infty Z_t(\alpha B)^n$
