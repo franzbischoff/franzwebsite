@@ -33,14 +33,16 @@
     "editor.tabCompletion": "on",
     "editor.tabSize": 2,
     "editor.wordWrapColumn": 120,
-    "explorerExclude.backup": null,
+    "explorerExclude.backup": {},
     "files.exclude": {
-      "**/.git": true,
-      "**/.svn": true,
-      "**/.hg": true,
-      "**/CVS": true,
+      ".history": true,
       "**/.DS_Store": true,
-      ".history": true
+      "**/.git": true,
+      "**/.hg": true,
+      "**/.svn": true,
+      "**/renv/library": true,
+      "**/renv/staging": true,
+      "**/CVS": true
     },
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
@@ -52,6 +54,7 @@
       "**/log/**": true,
       "**/logs/**": true,
       "**/renv/library/**": true,
+      "**/renv/staging/**": true,
       "**/tmp/**": true,
       "/public/**": true
     },
@@ -73,6 +76,6 @@
     "todo-tree.tree.buttons.export": true,
     "todo-tree.tree.disableCompactFolders": true,
     "todo-tree.tree.expanded": true,
-    "todo-tree.tree.scanMode": "workspace"
+    "todo-tree.tree.scanMode": "workspace",
   }
 }
