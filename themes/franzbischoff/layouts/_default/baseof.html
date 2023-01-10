@@ -17,6 +17,15 @@
     <link rel="stylesheet" href="{{ .Site.BaseURL }}css/kube.min.css">
     <link rel="stylesheet" href="{{ .Site.BaseURL }}css/franzbischoff.min.css">
     <script data-ad-client="ca-pub-8893551542110083" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{.Site.GoogleAnalytics}}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', '{{.Site.GoogleAnalytics}}');
+    </script>
 </head>
   <body>
     <header>
@@ -103,16 +112,6 @@
 
     <!-- {{ template "_internal/google_analytics_async.html" . }} -->
     <!-- {{ site.Config.Services.GoogleAnalytics.ID }} -->
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{.Site.GoogleAnalytics}}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', '{{.Site.GoogleAnalytics}}');
-    </script>
 
   </body>
 </html>
