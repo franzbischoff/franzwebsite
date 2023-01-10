@@ -1,11 +1,4 @@
 # nolint start
-if (Sys.getenv("CI") == "") { # not CI
-options(repos = c(CRAN = "https://cran.rstudio.org"))
-
-if (.Platform$OS.type == "windows") {
-  Sys.setenv(LC_CTYPE = "C")
-}
-}
 
 source("renv/activate.R")
 
@@ -92,7 +85,7 @@ options(
   # blogdown.hugo.args = "--minify",
   # blogdown.hugo.dir = NA, # The directory of the Hugo executable
   # blogdown.hugo.server = c("-D", "-F", "--navigateToChanged", "--disableFastRender"),
-  blogdown.hugo.version = "0.103.1",
+  blogdown.hugo.version = "0.109.0",
   # blogdown.initial_files = NA,
   blogdown.insertimage.usebaseurl = FALSE, # RBloggers, https://github.com/rstudio/blogdown/blob/5aeb809c68cfa1a9e616bc9ed9878c3ea5d05300/NEWS.md#new-features-13
   blogdown.knit.on_save = FALSE,
@@ -108,9 +101,9 @@ options(
   blogdown.server.verbose = TRUE,
   # blogdown.server.wait = 2,
   # blogdown.site_root = NA,
+  # blogdown.subdir_fun = NA, # function. Update subdir in according to the title
   blogdown.subdir = "posts", # Default subdirectory under content/ for new posts
   blogdown.time = TRUE,
-  # blogdown.subdir_fun = NA, # function. Update subdir in according to the title
   blogdown.time_diff = 0, # does html output file not exist, or is it older than Rmd for at least N seconds?
   blogdown.title_case = FALSE,
   blogdown.warn.future = TRUE,

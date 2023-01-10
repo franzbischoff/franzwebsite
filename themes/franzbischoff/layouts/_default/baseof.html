@@ -101,7 +101,8 @@
     </script>
     {{ end }}
 
-    <!-- {{ template "_internal/google_analytics.html" . }} -->
+    <!-- {{ template "_internal/google_analytics_async.html" . }} -->
+    <!-- {{ site.Config.Services.GoogleAnalytics.ID }} -->
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{.Site.GoogleAnalytics}}"></script>
@@ -113,5 +114,5 @@
       gtag('config', '{{.Site.GoogleAnalytics}}');
     </script>
 
- </body>
+  </body>
 </html>

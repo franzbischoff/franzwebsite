@@ -10,9 +10,11 @@ lint:
   files:
     - name: R
       extensions: [R]
+    - name: Rmd
+      extensions: [Rmd]
   definitions:
     - name: lintr
-      files: [R]
+      files: [R, Rmd]
       package: lintr
       direct_configs:
         - .lintr

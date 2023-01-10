@@ -6,7 +6,7 @@ canonifyurls: yes
 paginate: 10
 theme: franzbischoff
 languageCode: en-us
-googleAnalytics: UA-160033971-1
+googleAnalytics: G-L8EJYTP892
 disqusShortname: franzbischoff
 ignoreFiles:
   - \.Rmd$
