@@ -1,0 +1,83 @@
+version: 0.1
+cli:
+  version: 1.3.1
+plugins:
+  sources:
+    - id: trunk
+      ref: v0.0.8
+      uri: https://github.com/trunk-io/plugins
+lint:
+  files:
+    - name: R
+      extensions: [R]
+  definitions:
+    - name: lintr
+      files: [R]
+      package: lintr
+      direct_configs:
+        - .lintr
+      environment:
+        - name: CI
+          value: trunk
+      run_when: [cli, lsp, monitor]
+      commands:
+        - output: regex
+          parse_regex: \s*(?P<path>\/.*\.R):(?P<line>\d+):(?P<col>\d+):.*](?P<message>.*)
+          run: Rscript --no-restore --no-save -e lintr::lint(\"${target}\")
+          batch: false
+          success_codes: [0]
+    - name: styler
+      type: rewrite
+      files: [R]
+      package: styler
+      formatter: true
+      in_place: true
+      cache_results: true
+      run_when: [cli, lsp, monitor]
+      environment:
+        - name: CI
+          value: trunk
+      command:
+        - Rscript
+        - --no-restore --no-save -e styler::style_file('${target}')
+      batch: true
+      success_codes: [0]
+  enabled:
+    - lintr
+    - styler
+    - taplo@0.7.0
+    - git-diff-check
+    - prettier@2.8.2
+    - gitleaks@8.15.2
+    - actionlint@1.6.22
+    - markdownlint@0.33.0
+  disabled:
+    - svgo
+    - oxipng
+  ignore:
+    - linters: [ALL]
+      paths:
+        - .trunk/**
+        - dev/**
+        - .vscode/**
+        - inst/**
+        - output/**
+        - resources/**
+        - public/**
+        - docs/**
+        - renv/**
+        - man/**
+        - "**/*.rds"
+        - "**/*.html"
+        - "**/*.ico"
+runtimes:
+  enabled:
+    - go@1.18.3
+    - node@18.12.1
+actions:
+  disabled:
+    - trunk-announce
+    - trunk-check-pre-push
+    - trunk-fmt-pre-commit
+  enabled:
+    - trunk-upgrade-available

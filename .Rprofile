@@ -1,8 +1,12 @@
 # nolint start
-# options(repos = c(CRAN = "https://cran.rstudio.org"))
-# if (.Platform$OS.type == "windows") {
-#   Sys.setenv(LC_CTYPE = "C")
-# }
+if (Sys.getenv("CI") == "") { # not CI
+options(repos = c(CRAN = "https://cran.rstudio.org"))
+
+if (.Platform$OS.type == "windows") {
+  Sys.setenv(LC_CTYPE = "C")
+}
+}
+
 source("renv/activate.R")
 
 if (Sys.getenv("CI") == "") { # not CI
@@ -105,7 +109,7 @@ options(
   # blogdown.server.wait = 2,
   # blogdown.site_root = NA,
   blogdown.subdir = "posts", # Default subdirectory under content/ for new posts
-  blogdown.time = TRUE.
+  blogdown.time = TRUE,
   # blogdown.subdir_fun = NA, # function. Update subdir in according to the title
   blogdown.time_diff = 0, # does html output file not exist, or is it older than Rmd for at least N seconds?
   blogdown.title_case = FALSE,
