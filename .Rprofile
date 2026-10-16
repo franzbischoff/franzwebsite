@@ -58,7 +58,7 @@ if (Sys.getenv("CI") == "") { # not CI
       }
     }
   } else { # in RStudio
-        suppressMessages(
+    suppressMessages(
       suppressWarnings({
         require("testthat", quietly = TRUE)
         require("devtools", quietly = TRUE)

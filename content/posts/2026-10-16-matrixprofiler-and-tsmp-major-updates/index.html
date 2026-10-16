@@ -1,0 +1,95 @@
+---
+title: "tsmp Is Back: A Faster, Friendlier Matrix Profile Workflow for R"
+author: Francisco Bischoff
+date: 2026-10-16T16:15:46+0100
+slug: matrixprofiler-and-tsmp-major-updates
+categories:
+  - matrixprofile
+  - timeseries
+  - tsmp
+  - r-bloggers
+tags:
+  - R
+  - article
+publishDate: '2026-10-16T16:15:46+01:00'
+mathjax: true
+editor_options:
+  markdown:
+    mode: markdown
+---
+
+
+
+<style type="text/css">
+img {
+  display: block; margin-left: auto; margin-right: auto;
+}
+</style>
+<div id="a-new-chapter-for-the-matrix-profile-in-r" class="section level2">
+<h2>A new chapter for the Matrix Profile in R</h2>
+<p>For a while, <code>tsmp</code> looked quiet. The project was not standing still, though: the Matrix Profile tools for R have been reorganized around a much clearer split between the computational engine and the everyday data-mining interface.</p>
+<p>In <code>tsmp</code> 0.5.1, the package that many of us have used for years becomes a pure-R analytical layer. The new <a href="https://cran.r-project.org/package=matrixprofiler"><code>matrixprofiler</code></a> package takes over the computationally intensive work in an optimized C++17 engine. The result is not a replacement for <code>tsmp</code>; it is a stronger foundation underneath it.</p>
+</div>
+<div id="two-packages-two-jobs" class="section level2">
+<h2>Two packages, two jobs</h2>
+<p>The older <code>tsmp</code> release brought algorithms, analysis helpers, and much of the computation together in one package. That made it a convenient starting point, but as series and workloads grew, computational work implemented around R-level operations could become the bottleneck.</p>
+<p>The new architecture separates those responsibilities:</p>
+<ul>
+<li><strong><code>matrixprofiler</code></strong> provides the low-level Matrix Profile algorithms and optimized numerical primitives, with native multithreading through <code>RcppThread</code>.</li>
+<li><strong><code>tsmp</code></strong> keeps the higher-level workflow close to the analyst: motifs, chains, segmentation, snippets, plotting, and the familiar tools for day-to-day time-series mining.</li>
+</ul>
+<p>The heavy computation now runs in the native engine, while the package you use to explore and interpret results stays approachable. <code>tsmp</code> itself no longer needs compilation when installed from source; it delegates its computational backend to <code>matrixprofiler</code>.</p>
+<p>The everyday workflow remains familiar:</p>
+<pre class="r"><code>library(tsmp)
+
+profile &lt;- tsmp(series, window_size = 80)
+motifs &lt;- find_motif(profile, n_motifs = 3)
+plot(motifs)</code></pre>
+<p>The difference is what happens under the hood: computationally intensive steps can use the native backend and its <code>n_workers</code> controls, without asking every analyst to work directly with low-level routines.</p>
+</div>
+<div id="from-a-contrast-score-to-a-useful-pattern" class="section level2">
+<h2>From a contrast score to a useful pattern</h2>
+<p>The new engine also adds a native implementation of the <strong>Contrast Profile</strong>. It is designed for a practical question: <em>which subsequence is repeated in the examples I care about, but is absent from the examples I do not care about?</em></p>
+<p>Given positive and negative time series, the Contrast Profile compares each positive subsequence’s nearest match in the negative data with its nearest non-trivial match in the positive data. In simplified notation,</p>
+<p><span class="math display">\[
+C_m = \frac{MP_m^{(+,-)} - MP_m^{(+,+)}}{\sqrt{2m}},
+\]</span></p>
+<p>where <span class="math inline">\(m\)</span> is the window size. A high score highlights a pattern that is well conserved within the positive class and unlike the negative class. The original paper calls the highest-scoring subsequence the <strong>Plato</strong>: a candidate signature for the behavior or class of interest.</p>
+<p>In R, <code>matrixprofiler::contrast()</code> computes this profile directly:</p>
+<pre class="r"><code>cp &lt;- matrixprofiler::contrast(negative_data = negative_series, positive_data = positive_series,
+    window_size = 80L, distance = &quot;pearson&quot;, n_workers = 4L)
+
+cp$plato
+cp$plato_idx</code></pre>
+<p>The original Contrast Profile paper also discusses <strong>Top-K Platos</strong> for cases where the target behavior has more than one shape. Its key idea is important: the next result should be discovered after accounting for the previous pattern, rather than simply taking the next-highest, potentially redundant peak.</p>
+<p>The current package does not provide a <code>contrast_top_k()</code> function. For now, users who need several Contrast Profile Platos must implement the iterative orchestration themselves: discover a Plato with <code>contrast()</code>, add its pattern to the negative examples, and recompute before looking for the next one. The expensive Contrast Profile calculation still runs in the native <code>matrixprofiler</code> engine; the Top-K loop is left to the user.</p>
+</div>
+<div id="rfcp-when-frequency-matters" class="section level2">
+<h2>RFCP: when frequency matters</h2>
+<p>The new <strong>Relative Frequency Contrast Profile (RFCP)</strong> takes this contrastive idea further. Instead of comparing only the nearest positive and negative matches, RFCP considers ordered ranks of non-overlapping neighbors. This lets it ask not just whether a pattern occurs, but how its recurrence differs between positive and negative data.</p>
+<p><code>matrixprofiler::rfcp()</code> returns the contrast profile and the highest-scoring Plato. For a ranked, diverse set of discoveries, <code>matrixprofiler::rfcp_top_k()</code> iteratively finds a pattern, suppresses its occurrences and trivial neighbors, and then searches for the next one. You can request a different frequency rank at each iteration, enable adaptive frequency selection, and use callbacks to checkpoint longer runs.</p>
+<pre class="r"><code>top_patterns &lt;- matrixprofiler::rfcp_top_k(positive_data = positive_series, negative_data = negative_series,
+    window_size = 80L, k_platos = 3L, max_freq = c(4L, 3L, 2L), adaptive_max_freq = TRUE, n_workers = 4L)
+
+top_patterns$platos</code></pre>
+<p>Here, Top-K means a sequence of distinct, contrastive morphologies, not simply the K tallest overlapping peaks. That makes the result more useful when a class can be expressed in several ways, or when the first discovery would otherwise dominate the rest of the search.</p>
+</div>
+<div id="optional-cuda-acceleration" class="section level2">
+<h2>Optional CUDA acceleration</h2>
+<p>The standard <code>matrixprofiler</code> installation is a portable, multithreaded CPU engine. For supported algorithms, an NVIDIA GPU is also an option: the project documents a manual CUDA-enabled build, including support for algorithms such as MPX and RFCP.</p>
+<p>With the CUDA Toolkit and a compatible NVIDIA setup, clone the repository and install through its build script:</p>
+<pre class="sh"><code>git clone https://github.com/matrix-profile-foundation/matrixprofiler.git
+cd matrixprofiler
+./inst/cuda/build_cuda_rcpp.sh R CMD INSTALL .</code></pre>
+<p>After installation, check whether the package was compiled with CUDA support:</p>
+<pre class="r"><code>matrixprofiler::has_cuda()</code></pre>
+<p>CUDA is optional and must be enabled at build time; installing the regular CRAN package does not automatically turn it on.</p>
+</div>
+<div id="a-practical-way-to-get-started" class="section level2">
+<h2>A practical way to get started</h2>
+<p>If you already use <code>tsmp</code>, start with the new <a href="https://github.com/matrix-profile-foundation/tsmp/blob/master/MIGRATION.md">migration guide</a>, especially if your scripts create <code>doSNOW</code> clusters or assume invalid profile indices are <code>-1</code>. The updated parallel interface uses <code>n_workers</code>, and missing indices now use R’s <code>NA_integer_</code> convention.</p>
+<p>For new analyses, install the familiar high-level tools and their computational backend:</p>
+<pre class="r"><code>install.packages(c(&quot;tsmp&quot;, &quot;matrixprofiler&quot;))</code></pre>
+<p><code>tsmp</code> remains the friendly place to do everyday Matrix Profile data mining. <code>matrixprofiler</code> makes that experience faster and provides a home for optimized algorithms that need more direct control. Together, they bring the R ecosystem back into active development and make room for more methods without making the daily workflow harder to use.</p>
+<p>Explore <a href="https://cran.r-project.org/package=tsmp"><code>tsmp</code> on CRAN</a>, <a href="https://cran.r-project.org/package=matrixprofiler"><code>matrixprofiler</code> on CRAN</a>, and the <a href="https://matrix-profile-foundation.github.io/matrixprofiler/">matrixprofiler documentation</a>. For the research behind the Contrast Profile, see Mercer et al., <a href="https://doi.org/10.1109/ICDM51629.2021.00151">“Matrix Profile XXIII: Contrast Profile: A Novel Time Series Primitive that Allows Real World Classification”</a>.</p>
+</div>

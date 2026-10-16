@@ -16,6 +16,7 @@
 "content/posts/2021-02-17-presenting-matrixprofiler-a-fast-matrix-profile-implementation-in-r/index.Rmd" "9ef5c19ed742d63f4f14df0653e8daa3"
 "content/posts/2021-05-21-time-series-introduction-with-r-codes/index.Rmd" "0d80fb91845a942d9758c25a5b2d66ef"
 "content/posts/2021-06-16-time-series-introduction-with-r-codes/index.Rmd" "33d7a84d6f04387da74a4498d37614a7"
+"content/posts/2026-10-16-matrixprofiler-and-tsmp-major-updates/index.Rmd" "a592da734357da4c9600dd4009fa0387"
 "content/publications/2013-05-05-decision-on-conducting-hcv-immunoblot-and-hcv-viral-load-tests-dependent-upon-the-result-of-the-screening-tests/index.Rmd" "053374b8b124cc31d1ed3c08dd53853e"
 "content/publications/2014-04-02-risk-assessment-processes-in-transfusion-medicine/index.Rmd" "90e28d7edfd7be6629c5c9ee0a3be83a"
 "content/publications/2017-09-02-platelet-stock-optimization-through-apheresis-reinforcement-using-time-series-prediction/index.Rmd" "090975517932eb53119090f78407fb5a"
